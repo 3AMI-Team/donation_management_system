@@ -81,60 +81,18 @@ class _DonationsViewState extends State<DonationsView> {
                 title: 'Donations Tracking',
                 subtitle: 'Monitor and manage all donations in one place',
                 outlinedButtonText: 'Export CSV',
-                filledButtonText: '+ New Donation',
+                filledButtonText: 'New Donation',
                 onOutlinedPressed: () {},
                 onFilledPressed: () {},
               ),
               Gap(24.h),
-              _buildStatsRow(),
+              StatsRow(),
               Gap(24.h),
               _buildMainContent(),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildStatsRow() {
-    return Row(
-      children: [
-        Expanded(
-          child: StatCard(
-            title: 'Total Donations',
-            value: '\$124,500',
-            percentageChange: 12,
-            icon: Icons.attach_money,
-          ),
-        ),
-        Gap(16.w),
-        Expanded(
-          child: StatCard(
-            title: 'Completed',
-            value: '1,230',
-            percentageChange: 5,
-            icon: Icons.check_circle_outline,
-          ),
-        ),
-        Gap(16.w),
-        Expanded(
-          child: StatCard(
-            title: 'Pending',
-            value: '45',
-            percentageChange: -2,
-            icon: Icons.pending_outlined,
-          ),
-        ),
-        Gap(16.w),
-        Expanded(
-          child: StatCard(
-            title: 'Avg. Amount',
-            value: '\$850',
-            percentageChange: 8,
-            icon: Icons.trending_up_outlined,
-          ),
-        ),
-      ],
     );
   }
 
@@ -188,17 +146,65 @@ class _DonationsViewState extends State<DonationsView> {
           flex: 1,
           child: Column(
             children: [
-              RecordDonationForm(
-                onConfirmPressed: () {},
-              ),
+              RecordDonationForm(onConfirmPressed: () {}),
               Gap(20.h),
               CampaignGoalCard(
                 goalAmount: '\$100k',
                 currentAmount: '\$45,200',
-                description: 'Help us reach our goal to support more families in need. Every donation counts!',
+                description:
+                    'Help us reach our goal to support more families in need. Every donation counts!',
                 progress: 0.452,
               ),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class StatsRow extends StatelessWidget {
+  const StatsRow({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: StatCard(
+            title: 'Total Donations',
+            value: '\$124,500',
+            percentageChange: 12,
+            icon: Icons.attach_money,
+          ),
+        ),
+        Gap(16.w),
+        Expanded(
+          child: StatCard(
+            title: 'Completed',
+            value: '1,230',
+            percentageChange: 5,
+            icon: Icons.check_circle_outline,
+          ),
+        ),
+        Gap(16.w),
+        Expanded(
+          child: StatCard(
+            title: 'Pending',
+            value: '45',
+            percentageChange: -2,
+            icon: Icons.pending_outlined,
+          ),
+        ),
+        Gap(16.w),
+        Expanded(
+          child: StatCard(
+            title: 'Avg. Amount',
+            value: '\$850',
+            percentageChange: 8,
+            icon: Icons.trending_up_outlined,
           ),
         ),
       ],

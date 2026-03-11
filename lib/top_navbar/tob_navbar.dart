@@ -14,17 +14,17 @@ class TopNavbar extends StatelessWidget implements PreferredSizeWidget {
     final currentRoute = GoRouterState.of(context).uri.toString();
 
     return Container(
-      height: 70,
-      padding: const EdgeInsets.symmetric(horizontal: 40),
+      height: 70.h,
+      padding: EdgeInsets.symmetric(horizontal: 40.w),
       decoration: const BoxDecoration(
         color: Colors.white,
         border: Border(bottom: BorderSide(color: Color(0xffE5E7EB))),
       ),
       child: Row(
         children: [
-          const Text(
+          Text(
             "Donation System",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
           ),
 
           Gap(40.w),

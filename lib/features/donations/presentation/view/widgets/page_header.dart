@@ -60,7 +60,10 @@ class PageHeader extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 14.h,
+                  ),
                 ),
                 child: Text(
                   outlinedButtonText,
@@ -72,33 +75,6 @@ class PageHeader extends StatelessWidget {
                 ),
               ),
               Gap(12.w),
-              ElevatedButton(
-                onPressed: onFilledPressed,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
-                  elevation: 2,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.add, size: 20.sp),
-                    Gap(4.w),
-                    Text(
-                      filledButtonText,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
         ],

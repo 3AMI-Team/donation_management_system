@@ -22,7 +22,9 @@ class NavItem extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
         decoration: BoxDecoration(
           border: isActive
-              ? Border(bottom: BorderSide(color: AppColors.primary, width: 2))
+              ? Border(
+                  bottom: BorderSide(color: AppColors.primary, width: 2.w),
+                )
               : null,
         ),
         child: Text(
