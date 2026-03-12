@@ -10,6 +10,7 @@ class FilterChips extends StatelessWidget {
   final TextEditingController? searchController;
   final ValueChanged<String>? onSearchChanged;
   final VoidCallback? onSortPressed;
+  final String hintText;
 
   const FilterChips({
     super.key,
@@ -19,6 +20,7 @@ class FilterChips extends StatelessWidget {
     this.searchController,
     this.onSearchChanged,
     this.onSortPressed,
+    required this.hintText,
   });
 
   @override
@@ -44,7 +46,7 @@ class FilterChips extends StatelessWidget {
                 backgroundColor: AppColors.surface,
                 selectedColor: AppColors.primary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.r),
+                  borderRadius: BorderRadius.circular(16.r),
                   side: BorderSide(
                     color: isSelected ? AppColors.primary : AppColors.border,
                   ),
@@ -63,26 +65,36 @@ class FilterChips extends StatelessWidget {
             onChanged: onSearchChanged,
             style: TextStyle(fontSize: 14.sp),
             decoration: InputDecoration(
-              hintText: 'Search donations...',
+              hintText: hintText,
               hintStyle: TextStyle(
                 fontSize: 14.sp,
                 color: AppColors.textSecondary.withOpacity(0.6),
               ),
-              prefixIcon: Icon(Icons.search, size: 20.sp, color: AppColors.textSecondary),
+              prefixIcon: Icon(
+                Icons.search,
+                size: 20.sp,
+                color: AppColors.textSecondary,
+              ),
               filled: true,
               fillColor: AppColors.surface,
-              contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 16.w,
+                vertical: 12.h,
+              ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(22.r),
+                borderRadius: BorderRadius.circular(12.r),
                 borderSide: const BorderSide(color: AppColors.border),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(22.r),
+                borderRadius: BorderRadius.circular(12.r),
                 borderSide: const BorderSide(color: AppColors.border),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(22.r),
-                borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                borderRadius: BorderRadius.circular(12.r),
+                borderSide: const BorderSide(
+                  color: AppColors.primary,
+                  width: 2,
+                ),
               ),
             ),
           ),
@@ -103,7 +115,11 @@ class FilterChips extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                 child: Row(
                   children: [
-                    Icon(Icons.sort, size: 18.sp, color: AppColors.textSecondary),
+                    Icon(
+                      Icons.sort,
+                      size: 18.sp,
+                      color: AppColors.textSecondary,
+                    ),
                     Gap(6.w),
                     Text(
                       'Sort',
@@ -114,7 +130,11 @@ class FilterChips extends StatelessWidget {
                       ),
                     ),
                     Gap(4.w),
-                    Icon(Icons.arrow_drop_down, size: 18.sp, color: AppColors.textSecondary),
+                    Icon(
+                      Icons.arrow_drop_down,
+                      size: 18.sp,
+                      color: AppColors.textSecondary,
+                    ),
                   ],
                 ),
               ),

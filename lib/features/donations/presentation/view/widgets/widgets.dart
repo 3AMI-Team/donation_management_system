@@ -1,6 +1,6 @@
 export 'stat_card.dart';
 export 'page_header.dart';
-export 'filter_chips.dart';
+export '../../../../../core/widgets/filter_chips.dart';
 export 'donation_table.dart';
 export 'pagination.dart';
 export 'record_donation_form.dart';

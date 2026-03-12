@@ -105,6 +105,7 @@ class _DonationsViewState extends State<DonationsView> {
           child: Column(
             children: [
               FilterChips(
+                hintText: 'Search donations ...',
                 filters: _filters,
                 selectedFilter: _selectedFilter,
                 onFilterSelected: (filter) {

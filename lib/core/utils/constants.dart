@@ -1,9 +1,74 @@
+import 'package:donation_management_system/core/widgets/table_header.dart';
+import 'package:donation_management_system/features/donors/data/models/donor_model.dart';
+
 /// Application Constants
 /// Centralized constant definitions
 class AppConstants {
   // Private constructor to prevent instantiation
   AppConstants._();
 
+  //Donors
+  static const String donorsTitle = 'Donors Management';
+  static const String donorsDescription =
+      'Manage your donor database, track contributions, and maintain relationships with\nindividuals and corporate partners.';
+  static const List<TableHeader> donorHeader = [
+    TableHeader(text: 'Donor', flex: 2),
+    TableHeader(text: 'Phone', flex: 1),
+    TableHeader(text: 'Email', flex: 2),
+    TableHeader(text: 'Date Joined', flex: 1),
+    TableHeader(text: 'Type', flex: 1),
+    TableHeader(text: 'Address', flex: 1),
+    TableHeader(text: 'Actions', flex: 0),
+  ];
+
+  static final List<DonorModel> sampleDonors = [
+  DonorModel(
+    id: 1,
+    name: "Ibrahim Nasser",
+    email: "12baraka34@gmail.com",
+    phoneNumber: "01278988474",
+    address: "Ismailia, Egypt",
+    registDate: DateTime(2023, 1, 1),
+    type: DonorType.individual,
+  ),
+   DonorModel(
+    id: 2,
+    name: "Abdullah Mohamed",
+    email: "worrior@gmail.com",
+    phoneNumber: "123-456-7890",
+    address: "Ismailia, Egypt",
+    registDate: DateTime(2023, 1, 1),
+    type: DonorType.individual,
+  ),
+   DonorModel(
+    id: 3,
+    name: "Ahmed El-Shazle",
+    email: "Comy@gmail.com",
+    phoneNumber: "123-456-7890",
+    address: "Ismailia, Egypt",
+    registDate: DateTime(2023, 1, 1),
+    type: DonorType.individual,
+  ),
+   DonorModel(
+    id: 4,
+    name: "Mohamed Sayed",
+    email: "mohamed.sayed@example.com",
+    phoneNumber: "123-456-7890",
+    address: "Ismailia, Egypt",
+    registDate: DateTime(2023, 1, 1),
+    type: DonorType.individual,
+  ),
+   DonorModel(
+    id: 5,
+    name: "Sara Ahmed",
+    email: "SaraAhmed@gmail.com",
+    phoneNumber: '011723469',
+    address: 'nassb City',
+    registDate: DateTime(2023, 1, 1),
+    type: DonorType.organization,
+  ),
+];
+   //End Donors
   // API Configuration
   static const String baseUrl = 'https://api.example.com';
   static const String apiVersion = 'v1';
@@ -19,7 +84,7 @@ class AppConstants {
   static const String onboardingKey = 'onboarding_completed';
 
   // Pagination
-  static const int defaultPageSize = 20;
+  static const int defaultPageSize = 10;
   static const int maxPageSize = 100;
 
   // Animation Durations
@@ -40,18 +105,6 @@ class AppConstants {
   static const double radiusLG = 12.0;
   static const double radiusXL = 16.0;
   static const double radiusRound = 999.0;
-
-  // Icon Sizes
-  static const double iconSizeSM = 16.0;
-  static const double iconSizeMD = 24.0;
-  static const double iconSizeLG = 32.0;
-  static const double iconSizeXL = 48.0;
-
-  // Image Sizes
-  static const double avatarSizeSM = 32.0;
-  static const double avatarSizeMD = 48.0;
-  static const double avatarSizeLG = 64.0;
-  static const double avatarSizeXL = 96.0;
 
   // Validation
   static const int minPasswordLength = 8;
