@@ -6,7 +6,12 @@ import 'package:gap/gap.dart';
 
 class CustomAddButton extends StatelessWidget {
   final void Function() onTap;
-  const CustomAddButton({super.key, required this.onTap});
+  final String text;
+  const CustomAddButton({
+    super.key,
+    required this.onTap,
+    this.text = 'Add Donor',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +28,7 @@ class CustomAddButton extends StatelessWidget {
             Icon(Icons.add, color: Colors.white, size: 20.sp),
             Gap(5.w),
             Text(
-              'Add Donor',
+              text,
               style: AppTypography.button.copyWith(color: Colors.white),
             ),
           ],

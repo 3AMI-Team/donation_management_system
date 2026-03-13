@@ -1,4 +1,4 @@
-import 'package:donation_management_system/features/dashboard/presentation/view/widgets/kpi_card.dart';
+import 'package:donation_management_system/core/widgets/kpi_card.dart';
 import 'package:flutter/material.dart';
 
 class KPIsCards extends StatelessWidget {
