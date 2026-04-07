@@ -1,9 +1,10 @@
-import 'package:donation_management_system/core/routes/app_router.dart';
-
-import 'package:donation_management_system/core/theme/colors.dart';
 import 'package:flutter/material.dart';
-import 'core/di/injection_container.dart' as di;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'package:donation_management_system/core/routes/app_router.dart';
+import 'package:donation_management_system/core/theme/colors.dart';
+
+import 'core/di/injection_container.dart' as di;
 
 void main() async {
   await di.init();

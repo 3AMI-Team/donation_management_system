@@ -64,4 +64,8 @@ class AppColors {
     end: Alignment.bottomRight,
     colors: [Color(0xFF11998E), Color(0xFF38EF7D)],
   );
+
+  static Color? get scaffold => null;
+
+  static Color? get white => null;
 }
