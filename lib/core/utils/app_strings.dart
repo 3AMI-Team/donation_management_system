@@ -3,7 +3,7 @@ class AppStrings {
   AppStrings._();
 
   // General
-  static const String appName = 'Flutter Forge App';
+  static const String appName = 'Donation Management System';
   static const String ok = 'OK';
   static const String cancel = 'Cancel';
   static const String yes = 'Yes';
