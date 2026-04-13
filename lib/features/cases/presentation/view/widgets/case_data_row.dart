@@ -1,12 +1,11 @@
-
 import 'package:donation_management_system/core/widgets/widgets.dart';
-import 'package:donation_management_system/features/cases/data/models/case_model.dart';
+import 'package:donation_management_system/features/cases/domain/entity/case_entity.dart';
 import 'package:donation_management_system/features/donors/presentation/view/widgets/donor_data_row.dart';
 
 class CaseDataRow extends StatelessWidget {
-  final CaseModel caseModel;
+  final CaseEntity caseEntity;
 
-  const CaseDataRow({super.key, required this.caseModel});
+  const CaseDataRow({super.key, required this.caseEntity});
 
   @override
   Widget build(BuildContext context) {
@@ -19,113 +18,86 @@ class CaseDataRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // case name with avatar
-          Expanded(
-            flex: 2,
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 18.r,
-                  backgroundColor: AppColors.primary.withOpacity(0.1),
-
-                  child: Text(
-                    caseModel.name.substring(0, 1).toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ),
-                Gap(10.w),
-                Expanded(
-                  child: Text(
-                    caseModel.name,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textPrimary,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          //case Catygory
+          // ID
           Expanded(
             flex: 1,
             child: Text(
-              caseModel.category,
-              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
+              '#${caseEntity.id}',
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
+              ),
             ),
           ),
 
-          //case Contact info
+          // Description
           Expanded(
-            flex: 2,
-            child: Column(
-              crossAxisAlignment: .start,
-              children: [
-                Text(
-                  caseModel.phone,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                Gap(5.h),
-                Text(
-                  overflow: TextOverflow.fade,
-                  caseModel.email,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
+            flex: 3,
+            child: Text(
+              caseEntity.description,
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
 
-          //case registration date
+          // Amount
           Expanded(
-            //Donor registration date
             flex: 1,
             child: Text(
-              '${caseModel.registDate.day}/${caseModel.registDate.month}/${caseModel.registDate.year}',
+              '\$${caseEntity.amount.toStringAsFixed(2)}',
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+
+          // Date
+          Expanded(
+            flex: 1,
+            child: Text(
+              '${caseEntity.date.day}/${caseEntity.date.month}/${caseEntity.date.year}',
               style: TextStyle(fontSize: 13.sp, color: AppColors.textSecondary),
             ),
           ),
 
-          //Case Status
+          // Status
           Expanded(
             flex: 1,
-            child: Row(
-              children: [
-                Text(
-                  caseModel.status,
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+              decoration: BoxDecoration(
+                color: (caseEntity.status == 'Open' 
+                    ? Colors.green 
+                    : caseEntity.status == 'In Progress' 
+                        ? Colors.orange 
+                        : Colors.grey).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(4.r),
+              ),
+              child: Text(
+                caseEntity.status,
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
+                  color: caseEntity.status == 'Open' 
+                      ? Colors.green 
+                      : caseEntity.status == 'In Progress' 
+                          ? Colors.orange 
+                          : Colors.grey,
                 ),
-              ],
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
 
-          //Case address
-          Expanded(
-            flex: 1,
-            child: Text(
-              caseModel.address,
-              style: TextStyle(fontSize: 12.sp, color: AppColors.textSecondary),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          //Actions buttons
-          ActionsButtons(),
+          // Actions
+          const ActionsButtons(),
         ],
       ),
     );

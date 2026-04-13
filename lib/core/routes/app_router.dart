@@ -1,4 +1,5 @@
 import 'package:donation_management_system/features/auth/presentation/views/login_view.dart';
+import 'package:donation_management_system/features/auth/presentation/views/splash_view.dart';
 import 'package:donation_management_system/features/cases/presentation/view/cases_view.dart';
 import 'package:donation_management_system/features/categories/presentation/view/categories_view.dart';
 import 'package:donation_management_system/features/dashboard/presentation/view/dashboard_view.dart';
@@ -14,8 +15,14 @@ class AppRouter {
   AppRouter._();
 
   static final GoRouter router = GoRouter(
-    initialLocation: Routes.login,
+    initialLocation: Routes.splash,
     routes: [
+      // Splash
+      GoRoute(
+        path: Routes.splash,
+        builder: (context, state) => const SplashView(),
+      ),
+
       // Login
       GoRoute(
         path: Routes.login,

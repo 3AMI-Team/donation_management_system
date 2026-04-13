@@ -1,13 +1,13 @@
 import 'package:donation_management_system/core/theme/colors.dart';
-import 'package:donation_management_system/features/donors/data/models/donor_model.dart';
+import 'package:donation_management_system/features/donors/domain/entity/donor_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 
 class DonorDataRow extends StatelessWidget {
-  const DonorDataRow({super.key, required this.donor});
+  const DonorDataRow({super.key, required this.donorEntity});
 
-  final DonorModel donor;
+  final DonorEntity donorEntity;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class DonorDataRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          //Donor name with avatar
+          // Donor name with avatar
           Expanded(
             flex: 2,
             child: Row(
@@ -28,9 +28,8 @@ class DonorDataRow extends StatelessWidget {
                 CircleAvatar(
                   radius: 18.r,
                   backgroundColor: AppColors.primary.withOpacity(0.1),
-
                   child: Text(
-                    donor.name.substring(0, 1).toUpperCase(),
+                    donorEntity.name.isNotEmpty ? donorEntity.name.substring(0, 1).toUpperCase() : '?',
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
@@ -41,7 +40,7 @@ class DonorDataRow extends StatelessWidget {
                 Gap(10.w),
                 Expanded(
                   child: Text(
-                    donor.name,
+                    donorEntity.name,
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
@@ -53,12 +52,12 @@ class DonorDataRow extends StatelessWidget {
               ],
             ),
           ),
-         //Donor ID
+          
+          // Phone
           Expanded(
-            //Donor phone number
             flex: 1,
             child: Text(
-              donor.phoneNumber,
+              donorEntity.phone,
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
@@ -66,62 +65,33 @@ class DonorDataRow extends StatelessWidget {
               ),
             ),
           ),
-          //Donor email 
+          
+          // Email
           Expanded(
-            //Donor email
             flex: 2,
             child: Text(
-              donor.email,
+              donorEntity.email,
               style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
-            ),
-          ),
-         //Donor registration date
-          Expanded(
-            //Donor registration date
-            flex: 1,
-            child: Text(
-              '${donor.registDate.day}/${donor.registDate.month}/${donor.registDate.year}',
-              style: TextStyle(fontSize: 13.sp, color: AppColors.textSecondary),
-            ),
-          ),
-         //Donor type
-          Expanded(
-            //Donor type
-            flex: 1,
-            child: Row(
-              children: [
-                Text(
-                  //Donor type
-                  donor.type == DonorType.individual
-                      ? 'Individual'
-                      : 'Organization',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-         //Donor address  
-          Expanded(
-            //Donor address
-            flex: 1,
-            child: Text(
-              donor.address,
-              style: TextStyle(fontSize: 12.sp, color: AppColors.textSecondary),
               overflow: TextOverflow.ellipsis,
             ),
           ),
-         //Actions buttons
-          ActionsButtons(),
+          
+          // Registration date
+          Expanded(
+            flex: 1,
+            child: Text(
+              '${donorEntity.registerDate.day}/${donorEntity.registerDate.month}/${donorEntity.registerDate.year}',
+              style: TextStyle(fontSize: 13.sp, color: AppColors.textSecondary),
+            ),
+          ),
+          
+          // Actions buttons
+          const ActionsButtons(),
         ],
       ),
     );
   }
 }
-
-
 
 class ActionsButtons extends StatelessWidget {
   const ActionsButtons({super.key});

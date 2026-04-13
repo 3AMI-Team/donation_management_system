@@ -2,7 +2,8 @@
 class Routes {
   Routes._();
 
-  static const String login = '/';
+  static const String splash = '/';
+  static const String login = '/login';
   static const String dashboard = '/dashboard';
   static const String cases = '/cases';
   static const String donations = '/donations';

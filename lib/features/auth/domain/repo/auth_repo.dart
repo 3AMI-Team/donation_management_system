@@ -7,4 +7,6 @@ abstract class AuthRepo {
     required String username,
     required String password,
   });
+
+  Future<bool> isLoggedIn();
 }
