@@ -4,9 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:donation_management_system/core/theme/colors.dart';
 import 'package:donation_management_system/core/theme/typography.dart';
+import '../../../domain/entity/donation_trends_entity.dart';
 
 class DashboardChart extends StatelessWidget {
-  const DashboardChart({super.key});
+  final DonationTrends trends;
+  const DashboardChart({super.key, required this.trends});
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +32,9 @@ class DashboardChart extends StatelessWidget {
         ),
         child: Column(
           children: [
-            _ChartHeader(),
+            _ChartHeader(trends: trends),
             Gap(24.h),
-            Expanded(child: _ChartViewSection()),
+            Expanded(child: _ChartViewSection(trends: trends)),
           ],
         ),
       ),
@@ -41,10 +43,13 @@ class DashboardChart extends StatelessWidget {
 }
 
 class _ChartHeader extends StatelessWidget {
-  const _ChartHeader();
+  final DonationTrends trends;
+  const _ChartHeader({required this.trends});
 
   @override
   Widget build(BuildContext context) {
+    double totalByMonth = trends.donationByMonth.fold(0, (sum, item) => sum + item.amount);
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -60,7 +65,7 @@ class _ChartHeader extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '\$ 45,200',
+                  '\$ ${totalByMonth.toStringAsFixed(0)}',
                   style: AppTypography.h1.copyWith(fontSize: 28.sp),
                 ),
                 Gap(12.w),
@@ -116,7 +121,7 @@ class _PeriodSelector extends StatelessWidget {
       width: 240.w,
       padding: EdgeInsets.all(4.r),
       decoration: BoxDecoration(
-        color: AppColors.border, // تأكد أن surface لون رمادي فاتح جداً F5F5F5
+        color: AppColors.border,
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: TabBar(
@@ -149,16 +154,17 @@ class _PeriodSelector extends StatelessWidget {
 }
 
 class _ChartViewSection extends StatelessWidget {
-  const _ChartViewSection();
+  final DonationTrends trends;
+  const _ChartViewSection({required this.trends});
 
   @override
   Widget build(BuildContext context) {
-    return const TabBarView(
-      physics: NeverScrollableScrollPhysics(),
+    return TabBarView(
+      physics: const NeverScrollableScrollPhysics(),
       children: [
-        _BaseLineChart(data: monthData, type: ChartType.monthly),
-        _BaseLineChart(data: weekData, type: ChartType.weekly),
-        _BaseLineChart(data: dayData, type: ChartType.daily),
+        _BaseLineChart(items: trends.donationByMonth, type: ChartType.monthly),
+        _BaseLineChart(items: trends.donationByWeek, type: ChartType.weekly),
+        _BaseLineChart(items: trends.donationByDay, type: ChartType.daily),
       ],
     );
   }
@@ -167,57 +173,107 @@ class _ChartViewSection extends StatelessWidget {
 enum ChartType { monthly, weekly, daily }
 
 class _BaseLineChart extends StatelessWidget {
-  final List<FlSpot> data;
+  final List<DonationTrendItem> items;
   final ChartType type;
 
-  const _BaseLineChart({required this.data, required this.type});
+  const _BaseLineChart({required this.items, required this.type});
 
   @override
   Widget build(BuildContext context) {
-    return LineChart(
-      duration: const Duration(milliseconds: 400),
-      LineChartData(
-        minX: 1,
-        maxX: 12,
-        minY: 0,
-        maxY: 10,
-        clipData: const FlClipData.none(),
-        gridData: _buildGridData(),
-        titlesData: _buildTitlesData(),
-        borderData: FlBorderData(show: false),
-        lineTouchData: _buildTouchData(),
-        lineBarsData: [
-          LineChartBarData(
-            spots: data,
-            isCurved: true,
-            color: AppColors.primary,
-            barWidth: 3.5,
-            isStrokeCapRound: true,
-            dotData: FlDotData(
-              show: true,
-              getDotPainter: (spot, percent, barData, index) =>
-                  FlDotCirclePainter(
-                    radius: 3,
-                    color: Colors.white,
-                    strokeWidth: 2,
-                    strokeColor: AppColors.primary,
-                  ),
-            ),
-            belowBarData: BarAreaData(
-              show: true,
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  AppColors.primary.withOpacity(0.15),
-                  AppColors.primary.withOpacity(0.0),
-                ],
+    if (items.isEmpty) {
+      return const Center(child: Text('No data available'));
+    }
+
+    final spots = _generateSpots();
+    
+    // Calculate intelligent MaxY and Interval
+    double rawMaxY = spots.isEmpty ? 10.0 : spots.map((s) => s.y).reduce((a, b) => a > b ? a : b);
+    double maxY = rawMaxY == 0 ? 1000 : (rawMaxY * 1.3);
+    double interval = (maxY / 5).ceilToDouble();
+    if (interval == 0) interval = 1000;
+    maxY = interval * 5; // Normalize maxY to interval steps
+
+    // Calculate X range
+    double minX = 0;
+    double maxX = 11;
+    if (type == ChartType.monthly) {
+       minX = 1;
+       maxX = 12;
+    } else if (type == ChartType.weekly) {
+       minX = 1;
+       maxX = 7;
+    } else if (type == ChartType.daily) {
+       // For daily, if we have limited points, we can either show full day or a balanced window
+       // Let's show from the first hour minus 1 to last hour plus 5 to avoid gaps but feel natural
+       minX = spots.first.x - 1;
+       maxX = spots.last.x + 5; 
+       if (minX < 0) minX = 0;
+       if (maxX > 23) maxX = 23;
+    }
+
+    return Padding(
+      padding: EdgeInsets.only(right: 20.w, left: 10.w), // Add padding to avoid edge cuts
+      child: LineChart(
+        duration: const Duration(milliseconds: 400),
+        LineChartData(
+          minX: minX,
+          maxX: maxX,
+          minY: 0,
+          maxY: maxY,
+          gridData: _buildGridData(interval),
+          titlesData: _buildTitlesData(interval),
+          borderData: FlBorderData(show: false),
+          lineTouchData: _buildTouchData(),
+          lineBarsData: [
+            LineChartBarData(
+              spots: spots,
+              isCurved: true,
+              color: AppColors.primary,
+              barWidth: 4,
+              isStrokeCapRound: true,
+              dotData: FlDotData(
+                show: true,
+                getDotPainter: (spot, percent, barData, index) =>
+                    FlDotCirclePainter(
+                      radius: 4,
+                      color: Colors.white,
+                      strokeWidth: 2.5,
+                      strokeColor: AppColors.primary,
+                    ),
+              ),
+              belowBarData: BarAreaData(
+                show: true,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppColors.primary.withOpacity(0.2),
+                    AppColors.primary.withOpacity(0.0),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
+  }
+
+  List<FlSpot> _generateSpots() {
+    if (type == ChartType.monthly) {
+      return items.map((e) => FlSpot(double.parse(e.label), e.amount)).toList();
+    } else if (type == ChartType.daily) {
+      return items.map((e) => FlSpot(double.parse(e.label), e.amount)).toList();
+    } else if (type == ChartType.weekly) {
+      const weekDays = {
+        'Monday': 1.0, 'Tuesday': 2.0, 'Wednesday': 3.0, 'Thursday': 4.0, 'Friday': 5.0, 'Saturday': 6.0, 'Sunday': 7.0,
+      };
+      final sortedItems = List<DonationTrendItem>.from(items)
+        ..sort((a, b) => (weekDays[a.label] ?? 0).compareTo(weekDays[b.label] ?? 0));
+        
+      return sortedItems.map((e) => FlSpot(weekDays[e.label] ?? 0, e.amount)).toList();
+    }
+    return [];
   }
 
   LineTouchData _buildTouchData() => LineTouchData(
@@ -226,7 +282,7 @@ class _BaseLineChart extends StatelessWidget {
       getTooltipItems: (spots) => spots
           .map(
             (s) => LineTooltipItem(
-              '\$${s.y}k',
+              '\$${s.y.toStringAsFixed(0)}',
               const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           )
@@ -234,22 +290,25 @@ class _BaseLineChart extends StatelessWidget {
     ),
   );
 
-  FlGridData _buildGridData() => FlGridData(
+  FlGridData _buildGridData(double interval) => FlGridData(
     show: true,
     drawVerticalLine: false,
+    horizontalInterval: interval,
     getDrawingHorizontalLine: (value) =>
         FlLine(color: AppColors.border.withOpacity(0.2), strokeWidth: 1),
   );
 
-  FlTitlesData _buildTitlesData() => FlTitlesData(
+  FlTitlesData _buildTitlesData(double interval) => FlTitlesData(
     rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
     topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
     leftTitles: AxisTitles(
       sideTitles: SideTitles(
         showTitles: true,
-        reservedSize: 45.w,
+        interval: interval,
+        reservedSize: 65.w,
         getTitlesWidget: (val, meta) => Text(
-          '${val.toInt()}k',
+          '\$${val.toInt()}',
+          textAlign: TextAlign.left,
           style: TextStyle(color: Colors.grey, fontSize: 11.sp),
         ),
       ),
@@ -257,15 +316,19 @@ class _BaseLineChart extends StatelessWidget {
     bottomTitles: AxisTitles(
       sideTitles: SideTitles(
         showTitles: true,
-        interval: 1, // لإظهار كل النقاط
-        reservedSize: 30.h,
-        getTitlesWidget: (val, meta) => Padding(
-          padding: EdgeInsets.only(top: 10.h),
-          child: Text(
-            _getLabel(val),
-            style: TextStyle(color: Colors.grey, fontSize: 11.sp),
-          ),
-        ),
+        interval: 1,
+        reservedSize: 40.h,
+        getTitlesWidget: (val, meta) {
+          final label = _getLabel(val);
+          if (label.isEmpty) return const SizedBox.shrink();
+          return Padding(
+            padding: EdgeInsets.only(top: 12.h),
+            child: Text(
+              label,
+              style: TextStyle(color: Colors.grey, fontSize: 11.sp),
+            ),
+          );
+        },
       ),
     ),
   );
@@ -273,59 +336,19 @@ class _BaseLineChart extends StatelessWidget {
   String _getLabel(double value) {
     if (type == ChartType.monthly) {
       const labels = {
-        1: 'Jan',
-        2: 'Feb',
-        3: 'Mar',
-        4: 'Apr',
-        5: 'May',
-        6: 'Jun',
-        7: 'Jul',
-        8: 'Aug',
-        9: 'Sep',
-        10: 'Oct',
-        11: 'Nov',
-        12: 'Dec',
+        1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun',
+        7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec',
       };
       return labels[value.toInt()] ?? '';
     } else if (type == ChartType.weekly) {
       const labels = {
-        1: 'Mon',
-        2: 'Tue',
-        3: 'Wed',
-        4: 'Thu',
-        5: 'Fri',
-        6: 'Sat',
-        7: 'Sun',
+        1: 'Mon', 2: 'Tue', 3: 'Wed', 4: 'Thu', 5: 'Fri', 6: 'Sat', 7: 'Sun',
       };
       return labels[value.toInt()] ?? '';
     } else {
-      return '${value.toInt()}:00'; // لليومي مثلاً 10:00
+      // For daily, only show labels for the points we have to avoid clutter if range is wide
+      // or show specific intervals
+      return '${value.toInt()}:00';
     }
   }
 }
-
-// Mock Data
-const monthData = [
-  FlSpot(1, 3),
-  FlSpot(2, 4),
-  FlSpot(3, 6),
-  FlSpot(4, 5),
-  FlSpot(5, 8),
-  FlSpot(6, 7),
-];
-const weekData = [
-  FlSpot(1, 2),
-  FlSpot(2, 5),
-  FlSpot(3, 3),
-  FlSpot(4, 6),
-  FlSpot(5, 4),
-  FlSpot(6, 8),
-  FlSpot(7, 7),
-];
-const dayData = [
-  FlSpot(1, 4),
-  FlSpot(2, 3),
-  FlSpot(3, 5),
-  FlSpot(4, 2),
-  FlSpot(5, 4),
-];

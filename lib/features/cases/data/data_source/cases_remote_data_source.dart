@@ -14,7 +14,6 @@ class CasesRemoteDataSourceImpl implements CasesRemoteDataSource {
   @override
   Future<CasesResponseModel> getCases() async {
     final response = await api.get(ServerStrings.cases);
-    // Wrapping the response in model
     return CasesResponseModel.fromJson(response);
   }
 }
