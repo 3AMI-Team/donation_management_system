@@ -17,7 +17,7 @@ class _CasesViewBodyState extends State<CasesViewBody> {
 
   final TextEditingController _searchController = TextEditingController();
 
-  int _currentPage = 1;
+  final int _currentPage = 1;
 
   final List<String> _filters = ["All", "Medical", "Shelter", "Education"];
 

@@ -27,7 +27,7 @@ class RecentActivityTable extends StatelessWidget {
           if (donations.isEmpty)
             _buildEmptyState()
           else
-            ...donations.map((d) => ActivityTableRow(donation: d)).toList(),
+            ...donations.map((d) => ActivityTableRow(donation: d)),
         ],
       ),
     );

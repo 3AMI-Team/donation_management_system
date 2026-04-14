@@ -9,7 +9,7 @@ class AddNewCase extends StatefulWidget {
 
 class _AddNewCaseState extends State<AddNewCase> {
   @override
-  String selectedDonorType = "Individual"; // للقائمة المنسدلة
+  String selectedDonorType = "Individual"; 
 
   @override
   Widget build(BuildContext context) {
