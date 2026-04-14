@@ -29,10 +29,10 @@ class AuthRepoImpl implements AuthRepo {
           username: username,
           password: password,
         );
-        
+
         // Save token locally
         await localDataSource.saveToken(remoteUser.token);
-        
+
         return Right(remoteUser);
       } on AppException catch (e) {
         return Left(ServerFailure(message: e.message, code: e.statusCode));
