@@ -15,6 +15,7 @@ class EmployeesKPIsCards extends StatelessWidget {
             value: '48',
             logo: 'assets/icons/Donors.png',
             icon: Icons.groups_outlined,
+            vsLastMonth: 12,
           ),
         ),
 
@@ -26,6 +27,7 @@ class EmployeesKPIsCards extends StatelessWidget {
             value: '32',
             logo: 'assets/icons/active cases.png',
             icon: Icons.check_circle_outline_rounded,
+            vsLastMonth: 12,
           ),
         ),
 
@@ -37,6 +39,7 @@ class EmployeesKPIsCards extends StatelessWidget {
             value: '5',
             logo: 'assets/icons/funds distributed.png',
             icon: Icons.admin_panel_settings_outlined,
+            vsLastMonth: 12,
           ),
         ),
       ],

@@ -1,48 +1,89 @@
-import 'package:donation_management_system/core/routes/routes.dart';
+import 'package:donation_management_system/core/di/injection_container.dart';
 import 'package:donation_management_system/core/theme/colors.dart';
 import 'package:donation_management_system/core/theme/typography.dart';
 import 'package:donation_management_system/features/dashboard/presentation/view/widgets/dashboard_chart.dart';
 import 'package:donation_management_system/features/dashboard/presentation/view/widgets/kpis_cards.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
+import '../view_model/dashboard_cubit/dashboard_cubit.dart';
+import '../view_model/dashboard_cubit/dashboard_state.dart';
+import '../../../../core/routes/routes.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 32.h),
-        child: Column(
-          mainAxisAlignment: .start,
-          crossAxisAlignment: .start,
-          children: [
-            const KPIsCards(),
-            Gap(32.h),
-            Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        const DashboardChart(),
-                        Gap(32.h),
-                        const RecentActivity(),
-                      ],
-                    ),
-                  ),
-                  Gap(32.w),
-                  SizedBox(
-                    width: 385.w,
-                    child: ListView(children: [NewCases()]),
-                  ),
-                ],
+    return BlocProvider(
+      create: (context) => sl<DashboardCubit>()..getKpis(),
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 32.h),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BlocBuilder<DashboardCubit, DashboardState>(
+                builder: (context, state) {
+                  if (state is DashboardKpisLoaded) {
+                    return KPIsCards(kpis: state.kpis);
+                  } else if (state is DashboardLoading) {
+                    return _buildShimmerKpis();
+                  } else if (state is DashboardError) {
+                    return Center(child: Text(state.message));
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
+              Gap(32.h),
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ListView(
+                        children: [
+                          const DashboardChart(),
+                          Gap(32.h),
+                          const RecentActivity(),
+                        ],
+                      ),
+                    ),
+                    Gap(32.w),
+                    SizedBox(
+                      width: 385.w,
+                      child: ListView(children: [const NewCases()]),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerKpis() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: List.generate(
+          4,
+          (index) => Container(
+            width: 290.w,
+            height: 200.h,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16.r),
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -60,7 +101,7 @@ class NewCases extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
-        border: BoxBorder.all(color: AppColors.border),
+        border: Border.all(color: AppColors.border),
       ),
       child: const Center(child: Text('New Cases')),
     );
@@ -74,11 +115,11 @@ class RecentActivity extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 385.w,
-      height: 410.h,
+      // height: 410.h,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
-        border: BoxBorder.all(color: AppColors.border),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         children: [
@@ -138,7 +179,6 @@ class RecentActivityHeader extends StatelessWidget {
                 ),
               ),
             ),
-
             SizedBox(
               width: 150.w,
               child: Text(
@@ -149,7 +189,6 @@ class RecentActivityHeader extends StatelessWidget {
                 ),
               ),
             ),
-
             SizedBox(
               width: 150.w,
               child: Text(
@@ -170,8 +209,7 @@ class RecentActivityHeader extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
-              width: 120.w,
+            Expanded(
               child: Text(
                 textAlign: TextAlign.end,
                 'Status',
@@ -206,7 +244,6 @@ class RecentActivtyRow extends StatelessWidget {
               ),
             ),
           ),
-
           SizedBox(
             width: 150.w,
             child: Text(
@@ -216,7 +253,6 @@ class RecentActivtyRow extends StatelessWidget {
               ),
             ),
           ),
-
           SizedBox(
             width: 150.w,
             child: Text(
@@ -235,8 +271,7 @@ class RecentActivtyRow extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(
-            width: 120.w,
+          Expanded(
             child: Text(
               textAlign: TextAlign.end,
               'Completed',

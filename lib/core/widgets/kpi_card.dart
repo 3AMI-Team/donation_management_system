@@ -9,12 +9,15 @@ class KPICard extends StatelessWidget {
   final String value;
   final String logo;
   final IconData icon;
+  final double vsLastMonth;
+
   const KPICard({
     super.key,
     required this.title,
     required this.value,
     required this.logo,
     required this.icon,
+    this.vsLastMonth = 12,
   });
 
   @override
@@ -53,17 +56,19 @@ class KPICard extends StatelessWidget {
               Row(
                 children: [
                   Icon(
-                    Icons.trending_up_outlined,
-                    color: AppColors.primary,
+                    vsLastMonth >= 0
+                        ? Icons.trending_up_outlined
+                        : Icons.trending_down_outlined,
+                    color: vsLastMonth >= 0 ? AppColors.primary : Colors.red,
                     size: 25.sp,
                   ),
                   Gap(5.w),
                   Text(
-                    '12%',
+                    '${vsLastMonth.toStringAsFixed(1)}%',
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w400,
-                      color: AppColors.primary.withOpacity(0.7),
+                      color: vsLastMonth >= 0 ? AppColors.primary : Colors.red,
                     ),
                   ),
                   Gap(5.w),
