@@ -1,12 +1,10 @@
-import 'package:donation_management_system/core/widgets/filter_chips.dart';
+import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/donations/presentation/view/widgets/pagination.dart';
 import 'package:donation_management_system/features/donors/presentation/view/widgets/donors_table.dart';
 import 'package:donation_management_system/features/donors/presentation/view_model/donors_cubit/donors_cubit.dart';
 import 'package:donation_management_system/features/donors/presentation/view_model/donors_cubit/donors_state.dart';
-import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gap/gap.dart';
 
 class DonorsViewBody extends StatefulWidget {
   const DonorsViewBody({super.key});
@@ -16,10 +14,13 @@ class DonorsViewBody extends StatefulWidget {
 }
 
 class _DonorsViewBodyState extends State<DonorsViewBody> {
-  String _selectedFilter = 'All';
   final TextEditingController _searchController = TextEditingController();
 
-  final List<String> _filters = ["All", "Individual", "Corporate"];
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,6 @@ class _DonorsViewBodyState extends State<DonorsViewBody> {
         } else if (state is DonorsError) {
           return Center(child: Text(state.message));
         } else if (state is DonorsLoaded) {
-          final donors = state.donorsResponse.donors;
           return Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -40,41 +40,32 @@ class _DonorsViewBodyState extends State<DonorsViewBody> {
                   children: [
                     FilterChips(
                       hintText: 'Search donors...',
-                      filters: _filters,
-                      selectedFilter: _selectedFilter,
-                      onFilterSelected: (filter) {
-                        setState(() {
-                          _selectedFilter = filter;
-                        });
-                      },
+                      filters: const [], // Removed filtration as requested
+                      selectedFilter: 'All',
+                      onFilterSelected: (filter) {},
                       searchController: _searchController,
-                      onSearchChanged: (value) {},
+                      onSearchChanged: (value) {
+                        context.read<DonorsCubit>().searchDonors(value);
+                      },
                       onSortPressed: () {},
                     ),
                     Gap(16.h),
-                    DonorsTable(donors: donors),
+                    DonorsTable(donors: state.currentPageDonors),
                     Gap(16.h),
                     Pagination(
-                      currentPage: state.donorsResponse.page,
-                      totalItems: state.donorsResponse.totalCount,
-                      itemsPerPage: state.donorsResponse.pageSize,
-                      onPreviousPressed: () {
-                        if (state.donorsResponse.page > 1) {
-                          context.read<DonorsCubit>().getDonors(
-                                page: state.donorsResponse.page - 1,
-                                pageSize: state.donorsResponse.pageSize,
-                              );
-                        }
-                      },
-                      onNextPressed: () {
-                        if (state.donorsResponse.page <
-                            state.donorsResponse.totalPages) {
-                          context.read<DonorsCubit>().getDonors(
-                                page: state.donorsResponse.page + 1,
-                                pageSize: state.donorsResponse.pageSize,
-                              );
-                        }
-                      },
+                      currentPage: state.currentPage,
+                      totalItems: state.totalCount,
+                      itemsPerPage: 10,
+                      onPreviousPressed: state.currentPage > 1
+                          ? () => context
+                              .read<DonorsCubit>()
+                              .changePage(state.currentPage - 1)
+                          : null,
+                      onNextPressed: state.currentPage < state.totalPages
+                          ? () => context
+                              .read<DonorsCubit>()
+                              .changePage(state.currentPage + 1)
+                          : null,
                     ),
                   ],
                 ),

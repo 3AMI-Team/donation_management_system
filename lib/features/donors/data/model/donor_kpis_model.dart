@@ -3,7 +3,7 @@ import 'package:donation_management_system/features/donors/domain/entity/donor_k
 class DonorKpisModel extends DonorKpisEntity {
   const DonorKpisModel({
     required super.totalDonors,
-    required super.activeDonors,
+    required super.newDonorsThisMonth,
     required super.totalDonatedAmount,
     required super.avgDonation,
   });
@@ -11,7 +11,7 @@ class DonorKpisModel extends DonorKpisEntity {
   factory DonorKpisModel.fromJson(Map<String, dynamic> json) {
     return DonorKpisModel(
       totalDonors: json['totalDonors'] as int,
-      activeDonors: json['activeDonors'] as int,
+      newDonorsThisMonth: json['newDonorsThisMonth'] as int,
       totalDonatedAmount: (json['totalDonatedAmount'] as num).toDouble(),
       avgDonation: (json['avgDonation'] as num).toDouble(),
     );

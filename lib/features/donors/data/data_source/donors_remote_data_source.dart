@@ -10,6 +10,25 @@ abstract class DonorsRemoteDataSource {
   });
 
   Future<DonorKpisModel> getDonorKpis();
+
+  Future<void> registerDonor({
+    required String name,
+    required String email,
+    required String phone,
+    required String address,
+    required String type,
+  });
+
+  Future<void> updateDonor({
+    required int id,
+    required String name,
+    required String email,
+    required String phone,
+    required String address,
+    required String type,
+  });
+
+  Future<void> deleteDonor(int id);
 }
 
 class DonorsRemoteDataSourceImpl implements DonorsRemoteDataSource {
@@ -36,5 +55,51 @@ class DonorsRemoteDataSourceImpl implements DonorsRemoteDataSource {
   Future<DonorKpisModel> getDonorKpis() async {
     final response = await api.get(ServerStrings.donorKPIs);
     return DonorKpisModel.fromJson(response);
+  }
+
+  @override
+  Future<void> registerDonor({
+    required String name,
+    required String email,
+    required String phone,
+    required String address,
+    required String type,
+  }) async {
+    await api.post(
+      ServerStrings.donors,
+      body: {
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'address': address,
+        'type': type,
+      },
+    );
+  }
+
+  @override
+  Future<void> updateDonor({
+    required int id,
+    required String name,
+    required String email,
+    required String phone,
+    required String address,
+    required String type,
+  }) async {
+    await api.put(
+      "${ServerStrings.donors}/$id",
+      body: {
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'address': address,
+        'type': type,
+      },
+    );
+  }
+
+  @override
+  Future<void> deleteDonor(int id) async {
+    await api.delete("${ServerStrings.donors}/$id");
   }
 }

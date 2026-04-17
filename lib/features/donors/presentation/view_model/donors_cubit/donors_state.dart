@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:donation_management_system/features/donors/domain/entity/donors_response_entity.dart';
+import 'package:donation_management_system/features/donors/domain/entity/donor_entity.dart';
 
 abstract class DonorsState extends Equatable {
   const DonorsState();
@@ -13,12 +13,34 @@ class DonorsInitial extends DonorsState {}
 class DonorsLoading extends DonorsState {}
 
 class DonorsLoaded extends DonorsState {
-  final DonorsResponseEntity donorsResponse;
+  final List<DonorEntity> masterDonors;
+  final List<DonorEntity> filteredDonors;
+  final List<DonorEntity> currentPageDonors;
+  final int currentPage;
+  final int totalPages;
+  final int totalCount;
+  final String searchQuery;
 
-  const DonorsLoaded({required this.donorsResponse});
+  const DonorsLoaded({
+    required this.masterDonors,
+    required this.filteredDonors,
+    required this.currentPageDonors,
+    required this.currentPage,
+    required this.totalPages,
+    required this.totalCount,
+    this.searchQuery = '',
+  });
 
   @override
-  List<Object?> get props => [donorsResponse];
+  List<Object?> get props => [
+        masterDonors,
+        filteredDonors,
+        currentPageDonors,
+        currentPage,
+        totalPages,
+        totalCount,
+        searchQuery,
+      ];
 }
 
 class DonorsError extends DonorsState {

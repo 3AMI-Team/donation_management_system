@@ -53,4 +53,78 @@ class DonorsRepoImpl implements DonorsRepo {
       return const Left(NetworkFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, void>> registerDonor({
+    required String name,
+    required String email,
+    required String phone,
+    required String address,
+    required String type,
+  }) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await remoteDataSource.registerDonor(
+          name: name,
+          email: email,
+          phone: phone,
+          address: address,
+          type: type,
+        );
+        return const Right(null);
+      } on AppException catch (e) {
+        return Left(ServerFailure(message: e.message, code: e.statusCode));
+      } catch (e) {
+        return const Left(UnknownFailure());
+      }
+    } else {
+      return const Left(NetworkFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updateDonor({
+    required int id,
+    required String name,
+    required String email,
+    required String phone,
+    required String address,
+    required String type,
+  }) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await remoteDataSource.updateDonor(
+          id: id,
+          name: name,
+          email: email,
+          phone: phone,
+          address: address,
+          type: type,
+        );
+        return const Right(null);
+      } on AppException catch (e) {
+        return Left(ServerFailure(message: e.message, code: e.statusCode));
+      } catch (e) {
+        return const Left(UnknownFailure());
+      }
+    } else {
+      return const Left(NetworkFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteDonor(int id) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await remoteDataSource.deleteDonor(id);
+        return const Right(null);
+      } on AppException catch (e) {
+        return Left(ServerFailure(message: e.message, code: e.statusCode));
+      } catch (e) {
+        return const Left(UnknownFailure());
+      }
+    } else {
+      return const Left(NetworkFailure());
+    }
+  }
 }

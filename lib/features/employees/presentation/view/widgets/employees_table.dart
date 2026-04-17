@@ -158,7 +158,7 @@ class EmployeeDataRow extends StatelessWidget {
               ),
             ),
           ),
-          const ActionsButtons(),
+          const ActionsButtons(donor: null,),
         ],
       ),
     );

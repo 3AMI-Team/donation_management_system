@@ -10,4 +10,23 @@ abstract class DonorsRepo {
   });
 
   Future<Either<Failure, DonorKpisEntity>> getDonorKpis();
+
+  Future<Either<Failure, void>> registerDonor({
+    required String name,
+    required String email,
+    required String phone,
+    required String address,
+    required String type,
+  });
+
+  Future<Either<Failure, void>> updateDonor({
+    required int id,
+    required String name,
+    required String email,
+    required String phone,
+    required String address,
+    required String type,
+  });
+
+  Future<Either<Failure, void>> deleteDonor(int id);
 }

@@ -1,4 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:donation_management_system/features/donors/domain/use_case/register_donor_use_case.dart';
+import 'package:donation_management_system/features/donors/domain/use_case/update_donor_use_case.dart';
+import 'package:donation_management_system/features/donors/domain/use_case/delete_donor_use_case.dart';
+import 'package:donation_management_system/features/donors/presentation/view_model/add_donor_cubit/add_donor_cubit.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -139,10 +143,18 @@ void _initDonors() {
   // Cubits
   sl.registerFactory(() => DonorsCubit(getDonorsUseCase: sl()));
   sl.registerFactory(() => DonorStatsCubit(getDonorKpisUseCase: sl()));
+  sl.registerFactory(() => AddDonorCubit(
+        registerDonorUseCase: sl(),
+        updateDonorUseCase: sl(),
+        deleteDonorUseCase: sl(),
+      ));
 
   // Use Cases
   sl.registerLazySingleton(() => GetDonorsUseCase(repository: sl()));
   sl.registerLazySingleton(() => GetDonorKpisUseCase(repository: sl()));
+  sl.registerLazySingleton(() => RegisterDonorUseCase(repository: sl()));
+  sl.registerLazySingleton(() => UpdateDonorUseCase(repository: sl()));
+  sl.registerLazySingleton(() => DeleteDonorUseCase(repository: sl()));
 
   // Repository
   sl.registerLazySingleton<DonorsRepo>(

@@ -7,6 +7,8 @@ class DonorModel extends DonorEntity {
     required super.email,
     required super.phone,
     required super.registerDate,
+    required super.address,
+    required super.type,
   });
 
   factory DonorModel.fromJson(Map<String, dynamic> json) {
@@ -15,6 +17,8 @@ class DonorModel extends DonorEntity {
       name: json['name']?.toString() ?? '',
       email: json['email']?.toString() ?? '',
       phone: json['phone']?.toString() ?? '',
+      address: json['address']?.toString() ?? '',
+      type: json['type']?.toString() ?? 'Individual',
       registerDate: json['registerDate'] != null 
           ? DateTime.parse(json['registerDate'].toString()) 
           : DateTime.now(),
@@ -27,6 +31,8 @@ class DonorModel extends DonorEntity {
       'name': name,
       'email': email,
       'phone': phone,
+      'address': address,
+      'type': type,
       'registerDate': registerDate.toIso8601String(),
     };
   }
