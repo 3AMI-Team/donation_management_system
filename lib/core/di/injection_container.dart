@@ -34,14 +34,36 @@ import 'package:donation_management_system/features/donors/data/data_source/dono
 import 'package:donation_management_system/features/donors/data/repo/donors_repo_impl.dart';
 import 'package:donation_management_system/features/donors/domain/repo/donors_repo.dart';
 import 'package:donation_management_system/features/donors/domain/use_case/get_donors_use_case.dart';
+import 'package:donation_management_system/features/donors/domain/use_case/get_donor_kpis_use_case.dart';
 import 'package:donation_management_system/features/donors/presentation/view_model/donors_cubit/donors_cubit.dart';
+import 'package:donation_management_system/features/donors/presentation/view_model/donors_cubit/donor_stats_cubit.dart';
 
 // Cases
 import 'package:donation_management_system/features/cases/data/data_source/cases_remote_data_source.dart';
 import 'package:donation_management_system/features/cases/data/repo/cases_repo_impl.dart';
 import 'package:donation_management_system/features/cases/domain/repo/cases_repo.dart';
 import 'package:donation_management_system/features/cases/domain/use_case/get_cases_use_case.dart';
+import 'package:donation_management_system/features/cases/domain/use_case/get_case_kpis_use_case.dart';
 import 'package:donation_management_system/features/cases/presentation/view_model/cases_cubit/cases_cubit.dart';
+import 'package:donation_management_system/features/cases/presentation/view_model/cases_cubit/case_stats_cubit.dart';
+
+// Donations
+import 'package:donation_management_system/features/donations/data/data_source/donations_remote_data_source.dart';
+import 'package:donation_management_system/features/donations/data/repo/donations_repo_impl.dart';
+import 'package:donation_management_system/features/donations/domain/repo/donations_repo.dart';
+import 'package:donation_management_system/features/donations/domain/use_case/get_donations_use_case.dart';
+import 'package:donation_management_system/features/donations/domain/use_case/get_donation_kpis_use_case.dart';
+import 'package:donation_management_system/features/donations/domain/use_case/register_donation_use_case.dart';
+import 'package:donation_management_system/features/donations/presentation/view_model/donations_cubit/donations_cubit.dart';
+import 'package:donation_management_system/features/donations/presentation/view_model/donations_cubit/donation_stats_cubit.dart';
+import 'package:donation_management_system/features/donations/presentation/view_model/record_donation_cubit/record_donation_cubit.dart';
+
+// Categories
+import 'package:donation_management_system/features/categories/data/data_source/categories_remote_data_source.dart';
+import 'package:donation_management_system/features/categories/data/repo/categories_repo_impl.dart';
+import 'package:donation_management_system/features/categories/domain/repo/categories_repo.dart';
+import 'package:donation_management_system/features/categories/domain/use_case/get_categories_use_case.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/categories_cubit/categories_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -51,6 +73,8 @@ Future<void> init() async {
   _initDashboard();
   _initDonors();
   _initCases();
+  _initDonations();
+  _initCategories();
   _initExternal();
 }
 
@@ -112,11 +136,13 @@ void _initDashboard() {
 }
 
 void _initDonors() {
-  // Cubit
+  // Cubits
   sl.registerFactory(() => DonorsCubit(getDonorsUseCase: sl()));
+  sl.registerFactory(() => DonorStatsCubit(getDonorKpisUseCase: sl()));
 
-  // Use Case
+  // Use Cases
   sl.registerLazySingleton(() => GetDonorsUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetDonorKpisUseCase(repository: sl()));
 
   // Repository
   sl.registerLazySingleton<DonorsRepo>(
@@ -133,11 +159,13 @@ void _initDonors() {
 }
 
 void _initCases() {
-  // Cubit
+  // Cubits
   sl.registerFactory(() => CasesCubit(getCasesUseCase: sl()));
+  sl.registerFactory(() => CaseStatsCubit(getCaseKpisUseCase: sl()));
 
-  // Use Case
+  // Use Cases
   sl.registerLazySingleton(() => GetCasesUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetCaseKpisUseCase(repository: sl()));
 
   // Repository
   sl.registerLazySingleton<CasesRepo>(
@@ -150,6 +178,57 @@ void _initCases() {
   // Data Source
   sl.registerLazySingleton<CasesRemoteDataSource>(
     () => CasesRemoteDataSourceImpl(api: sl()),
+  );
+}
+
+void _initDonations() {
+  // Cubits
+  sl.registerFactory(() => DonationsCubit(getDonationsUseCase: sl()));
+  sl.registerFactory(() => DonationStatsCubit(getDonationKpisUseCase: sl()));
+  sl.registerFactory(() => RecordDonationCubit(
+        getDonorsUseCase: sl(),
+        getCategoriesUseCase: sl(),
+        registerDonationUseCase: sl(),
+        userLocalDataSource: sl(),
+      ));
+
+  // Use Cases
+  sl.registerLazySingleton(() => GetDonationsUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetDonationKpisUseCase(repository: sl()));
+  sl.registerLazySingleton(() => RegisterDonationUseCase(repository: sl()));
+
+  // Repository
+  sl.registerLazySingleton<DonationsRepo>(
+    () => DonationsRepoImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+  // Data Source
+  sl.registerLazySingleton<DonationsRemoteDataSource>(
+    () => DonationsRemoteDataSourceImpl(api: sl()),
+  );
+}
+
+void _initCategories() {
+  // Cubit
+  sl.registerFactory(() => CategoriesCubit(getCategoriesUseCase: sl()));
+
+  // Use Case
+  sl.registerLazySingleton(() => GetCategoriesUseCase(repository: sl()));
+
+  // Repository
+  sl.registerLazySingleton<CategoriesRepo>(
+    () => CategoriesRepoImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+  // Data Source
+  sl.registerLazySingleton<CategoriesRemoteDataSource>(
+    () => CategoriesRemoteDataSourceImpl(api: sl()),
   );
 }
 

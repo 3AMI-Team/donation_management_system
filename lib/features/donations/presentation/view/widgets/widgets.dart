@@ -1,7 +1,11 @@
 export 'stat_card.dart';
 export 'page_header.dart';
 export '../../../../../core/widgets/filter_chips.dart';
-export 'donation_table.dart';
+export 'donations_table.dart';
+export 'donation_table_row.dart';
 export 'pagination.dart';
 export 'record_donation_form.dart';
 export 'campaign_goal_card.dart';
+export 'donations_table_header_actions.dart';
+export 'donations_stats_row.dart';
+export 'donations_main_content.dart';

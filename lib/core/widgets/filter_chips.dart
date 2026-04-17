@@ -28,32 +28,41 @@ class FilterChips extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Wrap(
-            spacing: 8.w,
-            children: filters.map((filter) {
-              final bool isSelected = filter == selectedFilter;
-              return FilterChip(
-                label: Text(
-                  filter,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                    color: isSelected ? Colors.white : AppColors.textSecondary,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            child: Row(
+              children: filters.map((filter) {
+                final bool isSelected = filter == selectedFilter;
+                return Padding(
+                  padding: EdgeInsets.only(right: 8.w),
+                  child: FilterChip(
+                    label: Text(
+                      filter,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color:
+                            isSelected ? Colors.white : AppColors.textSecondary,
+                      ),
+                    ),
+                    selected: isSelected,
+                    onSelected: (_) => onFilterSelected(filter),
+                    backgroundColor: AppColors.surface,
+                    selectedColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.r),
+                      side: BorderSide(
+                        color:
+                            isSelected ? AppColors.primary : AppColors.border,
+                      ),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                   ),
-                ),
-                selected: isSelected,
-                onSelected: (_) => onFilterSelected(filter),
-                backgroundColor: AppColors.surface,
-                selectedColor: AppColors.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r),
-                  side: BorderSide(
-                    color: isSelected ? AppColors.primary : AppColors.border,
-                  ),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              );
-            }).toList(),
+                );
+              }).toList(),
+            ),
           ),
         ),
         Gap(16.w),
