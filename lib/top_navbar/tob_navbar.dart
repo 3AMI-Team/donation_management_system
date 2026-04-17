@@ -1,5 +1,6 @@
 import 'package:donation_management_system/core/routes/routes.dart';
 import 'package:donation_management_system/core/theme/typography.dart';
+import 'package:donation_management_system/top_navbar/widgets/nav_dropdown.dart';
 import 'package:donation_management_system/top_navbar/widgets/nav_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,11 +32,29 @@ class TopNavbar extends StatelessWidget implements PreferredSizeWidget {
 
           NavItem("Dashboard", Routes.dashboard, currentRoute),
           NavItem("Donations", Routes.donations, currentRoute),
-          NavItem("Donors", Routes.donors, currentRoute),
-          NavItem("Cases", Routes.cases, currentRoute),
+          NavDropdown(
+            title: "Users",
+            currentRoute: currentRoute,
+            items: const [
+              DropdownNavItem(
+                title: "Donors",
+                path: Routes.donors,
+                icon: Icons.people_outline,
+              ),
+              DropdownNavItem(
+                title: "Cases",
+                path: Routes.cases,
+                icon: Icons.assignment_outlined,
+              ),
+              DropdownNavItem(
+                title: "Employees",
+                path: Routes.employees,
+                icon: Icons.badge_outlined,
+              ),
+            ],
+          ),
           NavItem("Distributions", Routes.distributions, currentRoute),
           NavItem("Categories", Routes.categories, currentRoute),
-          NavItem("Employees", Routes.employees, currentRoute),
 
           const Spacer(),
 
