@@ -180,8 +180,33 @@ extension ListExtension<T> on List<T> {
 /// Num Extensions
 extension NumExtension on num {
   /// Converts number to currency format
-  String toCurrency({String symbol = '\$'}) {
-    return '$symbol${toStringAsFixed(2)}';
+  String toCurrency({String symbol = '\$', int decimalDigits = 2}) {
+    return '$symbol${toStringAsFixed(decimalDigits)}';
+  }
+
+  /// Converts number to compact currency format (e.g., $1.2B+, $150M+)
+  String toCompactCurrency({String symbol = '\$'}) {
+    if (this >= 1000000000) {
+      return '$symbol${(this / 1000000000).toStringAsFixed(1)}B+';
+    }
+    if (this >= 1000000) {
+      return '$symbol${(this / 1000000).toStringAsFixed(1)}M+';
+    }
+    if (this >= 1000) {
+      return '$symbol${(this / 1000).toStringAsFixed(1)}K+';
+    }
+    return toCurrency(symbol: symbol, decimalDigits: 0);
+  }
+
+  /// Converts number to compact percentage (e.g., 999%+)
+  String toCompactPercentage() {
+    if (this > 999) {
+      return '999%+';
+    }
+    if (this < -999) {
+      return '-999%+';
+    }
+    return '${toStringAsFixed(1)}%';
   }
 
   /// Converts bytes to human readable format

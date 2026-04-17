@@ -1,3 +1,4 @@
+import 'package:donation_management_system/core/utils/extensions.dart';
 import 'package:donation_management_system/features/donations/presentation/view_model/donations_cubit/donation_stats_cubit.dart';
 import 'package:donation_management_system/features/donations/presentation/view/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -5,18 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 
-import 'package:intl/intl.dart';
-
 class DonationsStatsRow extends StatelessWidget {
   const DonationsStatsRow({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final currencyFormat = NumberFormat.currency(
-      symbol: '\$',
-      decimalDigits: 0,
-    );
-
     return BlocBuilder<DonationStatsCubit, DonationStatsState>(
       builder: (context, state) {
         if (state is DonationStatsLoading) {
@@ -32,7 +26,7 @@ class DonationsStatsRow extends StatelessWidget {
               Expanded(
                 child: StatCard(
                   title: 'Monthly Total',
-                  value: currencyFormat.format(kpis.monthlyTotal),
+                  value: kpis.monthlyTotal.toCompactCurrency(),
                   percentageChange: 0,
                   icon: Icons.account_balance_wallet_outlined,
                 ),
@@ -59,7 +53,7 @@ class DonationsStatsRow extends StatelessWidget {
               Expanded(
                 child: StatCard(
                   title: 'Pending Amount',
-                  value: currencyFormat.format(kpis.pendingAmount),
+                  value: kpis.pendingAmount.toCompactCurrency(),
                   percentageChange: 0,
                   icon: Icons.hourglass_empty_outlined,
                 ),

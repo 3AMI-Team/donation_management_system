@@ -1,5 +1,6 @@
 import 'package:donation_management_system/core/theme/colors.dart';
 import 'package:donation_management_system/core/theme/typography.dart';
+import 'package:donation_management_system/core/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -23,62 +24,81 @@ class KPICard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 290.w,
-      height: 200.h,
-      padding: EdgeInsets.all(24.r),
+      height: 180.h,
+      padding: EdgeInsets.all(20.r),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
-        border: BoxBorder.all(color: AppColors.border),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.primary.withOpacity(0.7),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.primary.withOpacity(0.7),
+                  ),
                 ),
-              ),
-
-              Row(
-                children: [
-                  Icon(icon, color: AppColors.textPrimary, size: 32.sp),
-                  Gap(5.w),
-                  Text(value, style: AppTypography.h2),
-                ],
-              ),
-              Row(
-                children: [
-                  Icon(
-                    vsLastMonth >= 0
-                        ? Icons.trending_up_outlined
-                        : Icons.trending_down_outlined,
-                    color: vsLastMonth >= 0 ? AppColors.primary : Colors.red,
-                    size: 25.sp,
-                  ),
-                  Gap(5.w),
-                  Text(
-                    '${vsLastMonth.toStringAsFixed(1)}%',
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w400,
-                      color: vsLastMonth >= 0 ? AppColors.primary : Colors.red,
+                Row(
+                  children: [
+                    Icon(icon, color: AppColors.textPrimary, size: 28.sp),
+                    Gap(8.w),
+                    Flexible(
+                      child: Text(
+                        value,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.h2.copyWith(fontSize: 22.sp),
+                      ),
                     ),
+                  ],
+                ),
+                Flexible(
+                  child: Row(
+                    children: [
+                      Icon(
+                        vsLastMonth >= 0
+                            ? Icons.trending_up_outlined
+                            : Icons.trending_down_outlined,
+                        color: vsLastMonth >= 0 ? AppColors.primary : Colors.red,
+                        size: 20.sp,
+                      ),
+                      Gap(4.w),
+                      Text(
+                        vsLastMonth.toCompactPercentage(),
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color:
+                              vsLastMonth >= 0 ? AppColors.primary : Colors.red,
+                        ),
+                      ),
+                      Gap(4.w),
+                      Expanded(
+                        child: Text(
+                          'vs last month',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.bodySmall,
+                        ),
+                      ),
+                    ],
                   ),
-                  Gap(5.w),
-                  Text('vs last month', style: AppTypography.bodyMedium),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
-          Spacer(),
-          Image.asset(logo, width: 70.w, height: 70.h),
+          Gap(12.w),
+          Image.asset(logo, width: 60.w, height: 60.h, fit: BoxFit.contain),
         ],
       ),
     );

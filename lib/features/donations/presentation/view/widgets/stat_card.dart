@@ -42,13 +42,17 @@ class StatCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary.withOpacity(0.8),
-                  letterSpacing: 0.5,
+              Expanded(
+                child: Text(
+                  title,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary.withOpacity(0.8),
+                    letterSpacing: 0.5,
+                  ),
                 ),
               ),
               if (percentageChange != 0)
