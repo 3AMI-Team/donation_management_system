@@ -1,6 +1,6 @@
 class ServerStrings {
   static const String baseUrl =
-      "http://donationdb.runasp.net/"; // Update if needed
+      "http://donationdb.runasp.net"; // Update if needed
 
   // Auth
   static const String login = "/api/Account/login";

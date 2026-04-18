@@ -1,0 +1,41 @@
+name: Desktop Windows Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          # You can specify a version if needed, e.g., flutter-version: '3.19.0'
+          cache: true
+
+      - name: Enable Windows Build
+        run: flutter config --enable-windows-desktop
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Windows
+        run: flutter build windows --release
+
+      - name: Archive build
+        run: |
+          powershell Compress-Archive -Path build\windows\runner\Release\* -DestinationPath donation_system_windows.zip
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: donation-system-windows
+          path: donation_system_windows.zip
+          retention-days: 7
