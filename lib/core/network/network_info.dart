@@ -17,19 +17,7 @@ class NetworkInfoImpl implements NetworkInfo {
   NetworkInfoImpl(this.connectionChecker);
 
   @override
-  Future<bool> get isConnected async {
-    try {
-      // We add a timeout and a fallback to 'true' to ensure that if the check itself hangs 
-      // or fails (common on some Windows/Local setups), we still attempt the request.
-      // Dio will handle the actual connection failure if the server is truly unreachable.
-      return await connectionChecker.hasConnection.timeout(
-        const Duration(seconds: 3),
-        onTimeout: () => true,
-      );
-    } catch (_) {
-      return true;
-    }
-  }
+  Future<bool> get isConnected async => true; // Force true to avoid false negatives
 
   @override
   Stream<InternetConnectionStatus> get onStatusChange =>
