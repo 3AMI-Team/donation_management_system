@@ -1,9 +1,9 @@
 class ServerStrings {
   static const String baseUrl =
-      "http://donationdb.runasp.net"; // Update if needed
+      "http://donationdb.runasp.net/"; // Added trailing slash
 
   // Auth
-  static const String login = "/api/Account/login";
+  static const String login = "api/Account/login"; // Removed leading slash
 
   // Dashboard
   static const String dashboardKPIs = "api/Dashboard/kpis";
@@ -13,7 +13,7 @@ class ServerStrings {
 
   //Donation
   static const String allDonations = "api/Donations";
-  static const String donationKPIs = "api/Donations/kpis"; // Fixed from /stats
+  static const String donationKPIs = "api/Donations/kpis"; 
   static const String registerDonation = "api/Donations";
 
   // Donors

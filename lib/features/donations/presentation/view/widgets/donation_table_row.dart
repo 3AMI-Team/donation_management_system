@@ -1,9 +1,5 @@
-import 'package:donation_management_system/core/theme/colors.dart';
-import 'package:donation_management_system/core/theme/typography.dart';
 import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/donations/domain/entity/donation_entity.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 class DonationTableRow extends StatelessWidget {
