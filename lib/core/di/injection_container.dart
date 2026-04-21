@@ -48,8 +48,10 @@ import 'package:donation_management_system/features/cases/data/repo/cases_repo_i
 import 'package:donation_management_system/features/cases/domain/repo/cases_repo.dart';
 import 'package:donation_management_system/features/cases/domain/use_case/get_cases_use_case.dart';
 import 'package:donation_management_system/features/cases/domain/use_case/get_case_kpis_use_case.dart';
+import 'package:donation_management_system/features/cases/domain/use_case/add_case_use_case.dart';
 import 'package:donation_management_system/features/cases/presentation/view_model/cases_cubit/cases_cubit.dart';
 import 'package:donation_management_system/features/cases/presentation/view_model/cases_cubit/case_stats_cubit.dart';
+import 'package:donation_management_system/features/cases/presentation/view_model/add_case_cubit/add_case_cubit.dart';
 
 // Donations
 import 'package:donation_management_system/features/donations/data/data_source/donations_remote_data_source.dart';
@@ -174,10 +176,12 @@ void _initCases() {
   // Cubits
   sl.registerFactory(() => CasesCubit(getCasesUseCase: sl()));
   sl.registerFactory(() => CaseStatsCubit(getCaseKpisUseCase: sl()));
+  sl.registerFactory(() => AddCaseCubit(addCaseUseCase: sl()));
 
   // Use Cases
   sl.registerLazySingleton(() => GetCasesUseCase(repository: sl()));
   sl.registerLazySingleton(() => GetCaseKpisUseCase(repository: sl()));
+  sl.registerLazySingleton(() => AddCaseUseCase(repository: sl()));
 
   // Repository
   sl.registerLazySingleton<CasesRepo>(

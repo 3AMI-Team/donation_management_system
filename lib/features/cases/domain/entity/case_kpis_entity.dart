@@ -1,18 +1,18 @@
 import 'package:equatable/equatable.dart';
 
 class CaseKpisEntity extends Equatable {
-  final int totalActive;
-  final int totalPending;
-  final int totalDonors;
-  final double avgResponseTime;
+  final int totalCases;
+  final int pendingReview;
+  final int activeCases;
+  final int fundedCases;
 
   const CaseKpisEntity({
-    required this.totalActive,
-    required this.totalPending,
-    required this.totalDonors,
-    required this.avgResponseTime,
+    required this.totalCases,
+    required this.pendingReview,
+    required this.activeCases,
+    required this.fundedCases,
   });
 
   @override
-  List<Object?> get props => [totalActive, totalPending, totalDonors, avgResponseTime];
+  List<Object?> get props => [totalCases, pendingReview, activeCases, fundedCases];
 }

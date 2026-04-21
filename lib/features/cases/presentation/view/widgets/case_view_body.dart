@@ -13,13 +13,13 @@ class CasesViewBody extends StatefulWidget {
 }
 
 class _CasesViewBodyState extends State<CasesViewBody> {
-  String _selectedFilter = 'All';
-
   final TextEditingController _searchController = TextEditingController();
 
-  final int _currentPage = 1;
-
-  final List<String> _filters = ["All", "Medical", "Shelter", "Education"];
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,6 @@ class _CasesViewBodyState extends State<CasesViewBody> {
         } else if (state is CasesError) {
           return Center(child: Text(state.message));
         } else if (state is CasesLoaded) {
-          final cases = state.casesResponse.items;
           return Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -39,31 +38,33 @@ class _CasesViewBodyState extends State<CasesViewBody> {
                 child: Column(
                   children: [
                     FilterChips(
-                      hintText: 'Search Case...',
-                      filters: _filters,
-                      selectedFilter: _selectedFilter,
-                      onFilterSelected: (filter) {
-                        setState(() {
-                          _selectedFilter = filter;
-                        });
-                      },
+                      hintText: 'Search Cases...',
+                      filters: const [], // Filters can be added later if needed
+                      selectedFilter: 'All',
+                      onFilterSelected: (filter) {},
                       searchController: _searchController,
-                      onSearchChanged: (value) {},
+                      onSearchChanged: (value) {
+                        context.read<CasesCubit>().searchCases(value);
+                      },
                       onSortPressed: () {},
                     ),
                     Gap(16.h),
-                    CasesTable(cases: cases),
+                    CasesTable(cases: state.currentPageCases),
                     Gap(16.h),
                     Pagination(
-                      currentPage: state.casesResponse.page,
-                      totalItems: state.casesResponse.totalCount,
-                      itemsPerPage: state.casesResponse.pageSize,
-                      onPreviousPressed: () {
-                        // Handle pagination if needed
-                      },
-                      onNextPressed: () {
-                        // Handle pagination if needed
-                      },
+                      currentPage: state.currentPage,
+                      totalItems: state.totalCount,
+                      itemsPerPage: 10,
+                      onPreviousPressed: state.currentPage > 1
+                          ? () => context
+                              .read<CasesCubit>()
+                              .changePage(state.currentPage - 1)
+                          : null,
+                      onNextPressed: state.currentPage < state.totalPages
+                          ? () => context
+                              .read<CasesCubit>()
+                              .changePage(state.currentPage + 1)
+                          : null,
                     ),
                   ],
                 ),

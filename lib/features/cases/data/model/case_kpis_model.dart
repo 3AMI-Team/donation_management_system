@@ -2,18 +2,18 @@ import 'package:donation_management_system/features/cases/domain/entity/case_kpi
 
 class CaseKpisModel extends CaseKpisEntity {
   const CaseKpisModel({
-    required super.totalActive,
-    required super.totalPending,
-    required super.totalDonors,
-    required super.avgResponseTime,
+    required super.totalCases,
+    required super.pendingReview,
+    required super.activeCases,
+    required super.fundedCases,
   });
 
   factory CaseKpisModel.fromJson(Map<String, dynamic> json) {
     return CaseKpisModel(
-      totalActive: json['totalActive'] as int,
-      totalPending: json['totalPending'] as int,
-      totalDonors: json['totalDonors'] as int,
-      avgResponseTime: (json['avgResponseTime'] as num).toDouble(),
+      totalCases: json['totalCases'] as int? ?? 0,
+      pendingReview: json['pendingReview'] as int? ?? 0,
+      activeCases: json['activeCases'] as int? ?? 0,
+      fundedCases: json['fundedCases'] as int? ?? 0,
     );
   }
 }

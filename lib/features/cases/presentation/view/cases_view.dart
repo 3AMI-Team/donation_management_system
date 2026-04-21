@@ -5,6 +5,8 @@ import 'package:donation_management_system/features/cases/presentation/view/widg
 import 'package:donation_management_system/features/cases/presentation/view/widgets/case_view_body.dart';
 import 'package:donation_management_system/features/cases/presentation/view_model/cases_cubit/case_stats_cubit.dart';
 import 'package:donation_management_system/features/cases/presentation/view_model/cases_cubit/cases_cubit.dart';
+import 'package:donation_management_system/features/cases/presentation/view_model/add_case_cubit/add_case_cubit.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/categories_cubit/categories_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CasesView extends StatelessWidget {
@@ -19,6 +21,12 @@ class CasesView extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => sl<CaseStatsCubit>()..getCaseKpis(),
+        ),
+        BlocProvider(
+          create: (context) => sl<CategoriesCubit>()..getCategories(),
+        ),
+        BlocProvider(
+          create: (context) => sl<AddCaseCubit>(),
         ),
       ],
       child: Scaffold(
@@ -65,33 +73,42 @@ class CasesKPIsCards extends StatelessWidget {
         }
         if (state is CaseStatsLoaded) {
           final kpis = state.kpis;
-          return Wrap(
-            alignment: WrapAlignment.spaceBetween,
-            runSpacing: 16,
+          return Row(
             children: [
-              KPICard(
-                title: 'Total Active Cases',
-                value: kpis.totalActive.toString(),
-                logo: 'assets/icons/active cases.png',
-                icon: Icons.people_alt_outlined,
+              Expanded(
+                child: KPICard(
+                  title: 'Total Cases',
+                  value: kpis.totalCases.toString(),
+                  logo: 'assets/icons/active cases.png',
+                  icon: Icons.people_alt_outlined,
+                ),
               ),
-              KPICard(
-                title: 'Total Pending Cases',
-                value: kpis.totalPending.toString(),
-                logo: 'assets/icons/funds distributed.png',
-                icon: Icons.people_alt_outlined,
+              Gap(16.w),
+              Expanded(
+                child: KPICard(
+                  title: 'Pending Review',
+                  value: kpis.pendingReview.toString(),
+                  logo: 'assets/icons/funds distributed.png',
+                  icon: Icons.people_alt_outlined,
+                ),
               ),
-              KPICard(
-                title: 'Total Donors',
-                value: kpis.totalDonors.toString(),
-                logo: 'assets/icons/Donors.png',
-                icon: Icons.people_outline_outlined,
+              Gap(16.w),
+              Expanded(
+                child: KPICard(
+                  title: 'Active Cases',
+                  value: kpis.activeCases.toString(),
+                  logo: 'assets/icons/Donors.png',
+                  icon: Icons.people_outline_outlined,
+                ),
               ),
-              KPICard(
-                title: 'Avg. Respons Time',
-                value: '${kpis.avgResponseTime}h',
-                logo: 'assets/icons/funds distributed.png',
-                icon: Icons.av_timer,
+              Gap(16.w),
+              Expanded(
+                child: KPICard(
+                  title: 'Funded Cases',
+                  value: kpis.fundedCases.toString(),
+                  logo: 'assets/icons/funds distributed.png',
+                  icon: Icons.av_timer,
+                ),
               ),
             ],
           );
