@@ -8,10 +8,12 @@ class EmployeesTable extends StatelessWidget {
 
   static const List<TableHeader> _headers = [
     TableHeader(text: 'Employee', flex: 2),
+    TableHeader(text: 'Email', flex: 2),
     TableHeader(text: 'Username', flex: 1),
     TableHeader(text: 'Role', flex: 1),
     TableHeader(text: 'Phone', flex: 1),
     TableHeader(text: 'Address', flex: 1),
+    TableHeader(text: 'Actions', flex: 1, textAlign: TextAlign.right),
   ];
 
   @override
@@ -51,52 +53,54 @@ class EmployeeDataRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // Employee Name column
           Expanded(
             flex: 2,
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CircleAvatar(
-                  radius: 22.r,
+                  radius: 18.r,
                   backgroundColor: AppColors.primary.withOpacity(0.12),
                   child: Text(
                     _initials,
                     style: TextStyle(
-                      fontSize: 13.sp,
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.primary,
                     ),
                   ),
                 ),
-                Gap(12.w),
+                Gap(10.w),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        employee.name,
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      Gap(2.h),
-                      Text(
-                        employee.email,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.textLight,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                  child: Text(
+                    employee.name,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
           ),
+
+          // Email column
+          Expanded(
+            flex: 2,
+            child: Text(
+              employee.email,
+              style: TextStyle(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textSecondary,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+
+          // Username column
           Expanded(
             flex: 1,
             child: Text(
@@ -108,10 +112,9 @@ class EmployeeDataRow extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            flex: 1,
-            child: _RoleBadge(role: employee.role),
-          ),
+
+          Expanded(flex: 1, child: _RoleBadge(role: employee.role)),
+
           Expanded(
             flex: 1,
             child: Text(
@@ -123,6 +126,7 @@ class EmployeeDataRow extends StatelessWidget {
               ),
             ),
           ),
+
           Expanded(
             flex: 1,
             child: Text(
@@ -135,8 +139,74 @@ class EmployeeDataRow extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
+
+          Expanded(
+            flex: 1,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: _EmployeeActions(employee: employee),
+            ),
+          ),
         ],
       ),
+    );
+  }
+}
+
+class _EmployeeActions extends StatelessWidget {
+  final EmployeeEntity employee;
+
+  const _EmployeeActions({required this.employee});
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      icon: Icon(Icons.more_vert, size: 20.sp, color: AppColors.textSecondary),
+      onSelected: (value) {
+        switch (value) {
+          case 'view':
+            // TODO: Implement view details
+            break;
+          case 'edit':
+            // TODO: Implement edit employee
+            break;
+          case 'delete':
+            // TODO: Implement delete employee
+            break;
+        }
+      },
+      itemBuilder: (context) => [
+        const PopupMenuItem(
+          value: 'view',
+          child: Row(
+            children: [
+              Icon(Icons.visibility_outlined, size: 18),
+              Gap(8),
+              Text('View Details'),
+            ],
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'edit',
+          child: Row(
+            children: [
+              Icon(Icons.edit_outlined, size: 18),
+              Gap(8),
+              Text('Edit'),
+            ],
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'delete',
+          child: Row(
+            children: [
+              Icon(Icons.delete_outline, size: 18, color: Colors.red),
+              Gap(8),
+              Text('Delete', style: TextStyle(color: Colors.red)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

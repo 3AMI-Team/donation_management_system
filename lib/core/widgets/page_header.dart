@@ -75,6 +75,28 @@ class PageHeader extends StatelessWidget {
                 ),
               ),
               Gap(12.w),
+              ElevatedButton(
+                onPressed: onFilledPressed,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 14.h,
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  filledButtonText,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ],
           ),
         ],

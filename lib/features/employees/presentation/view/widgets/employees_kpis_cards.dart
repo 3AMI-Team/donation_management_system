@@ -17,7 +17,9 @@ class EmployeesKPIsCards extends StatelessWidget {
         }
 
         if (state is EmployeeStatsError) {
-          return Center(child: Text(state.message, style: TextStyle(color: Colors.red)));
+          return Center(
+            child: Text(state.message, style: TextStyle(color: Colors.red)),
+          );
         }
 
         if (state is EmployeeStatsLoaded) {
@@ -30,11 +32,11 @@ class EmployeesKPIsCards extends StatelessWidget {
                   value: kpis.totalEmployees.toString(),
                   logo: 'assets/icons/Donors.png',
                   icon: Icons.groups_outlined,
-                  vsLastMonth: kpis.monthlyActivityRate.toDouble(),
+                  vsLastMonth: kpis.monthlyActivityRate * 100,
                 ),
               ),
 
-              const SizedBox(width: 16), 
+              const SizedBox(width: 16),
 
               Expanded(
                 child: KPICard(
@@ -42,7 +44,7 @@ class EmployeesKPIsCards extends StatelessWidget {
                   value: kpis.activeSupervisors.toString(),
                   logo: 'assets/icons/active cases.png',
                   icon: Icons.check_circle_outline_rounded,
-                  vsLastMonth: kpis.monthlyActivityRate.toDouble(),
+                  vsLastMonth: kpis.monthlyActivityRate * 100,
                 ),
               ),
 
@@ -54,7 +56,20 @@ class EmployeesKPIsCards extends StatelessWidget {
                   value: kpis.adminCount.toString(),
                   logo: 'assets/icons/funds distributed.png',
                   icon: Icons.admin_panel_settings_outlined,
-                  vsLastMonth: kpis.monthlyActivityRate.toDouble(),
+                  vsLastMonth: kpis.monthlyActivityRate * 100,
+                ),
+              ),
+
+              const SizedBox(width: 16),
+
+              Expanded(
+                child: KPICard(
+                  title: 'Activity Rate',
+                  value:
+                      '${(kpis.monthlyActivityRate * 100).toStringAsFixed(1)}%',
+                  logo: 'assets/icons/funds distributed.png',
+                  icon: Icons.trending_up_rounded,
+                  vsLastMonth: kpis.monthlyActivityRate * 100,
                 ),
               ),
             ],

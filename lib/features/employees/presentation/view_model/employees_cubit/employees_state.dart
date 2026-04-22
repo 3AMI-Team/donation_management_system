@@ -1,19 +1,34 @@
 import 'package:donation_management_system/features/employees/domain/entity/employee_entity.dart';
 
-abstract class EmployeesState {}
+sealed class EmployeesState {}
 
-class EmployeesInitial extends EmployeesState {}
+final class EmployeesInitial extends EmployeesState {}
 
-class EmployeesLoading extends EmployeesState {}
+final class EmployeesLoading extends EmployeesState {}
 
-class EmployeesLoaded extends EmployeesState {
-  final List<EmployeeEntity> employees;
+final class EmployeesLoaded extends EmployeesState {
+  final List<EmployeeEntity> masterEmployees;
+  final List<EmployeeEntity> filteredEmployees;
+  final List<EmployeeEntity> currentPageEmployees;
+  final int currentPage;
+  final int totalPages;
+  final int totalCount;
   final String selectedRole;
+  final String searchQuery;
 
-  EmployeesLoaded({required this.employees, required this.selectedRole});
+  EmployeesLoaded({
+    required this.masterEmployees,
+    required this.filteredEmployees,
+    required this.currentPageEmployees,
+    required this.currentPage,
+    required this.totalPages,
+    required this.totalCount,
+    required this.selectedRole,
+    this.searchQuery = '',
+  });
 }
 
-class EmployeesError extends EmployeesState {
+final class EmployeesError extends EmployeesState {
   final String message;
 
   EmployeesError({required this.message});

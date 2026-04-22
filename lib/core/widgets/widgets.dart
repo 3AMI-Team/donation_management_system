@@ -4,6 +4,7 @@ export 'custom_add_button.dart';
 export 'filter_chips.dart';
 export 'custom_table.dart';
 export 'table_header.dart';
+export 'page_header.dart';
 export 'package:flutter/material.dart';
 export 'package:gap/gap.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';

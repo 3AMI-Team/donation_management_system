@@ -2,7 +2,7 @@ class EmployeeKpisEntity {
   final int totalEmployees;
   final int adminCount;
   final int activeSupervisors;
-  final int monthlyActivityRate;
+  final double monthlyActivityRate;
 
   EmployeeKpisEntity({
     required this.totalEmployees,
@@ -16,7 +16,7 @@ class EmployeeKpisEntity {
       totalEmployees: json['totalEmployees'] ?? 0,
       adminCount: json['adminCount'] ?? 0,
       activeSupervisors: json['activeSupervisors'] ?? 0,
-      monthlyActivityRate: json['monthlyActivityRate'] ?? 0,
+      monthlyActivityRate: (json['monthlyActivityRate'] as num?)?.toDouble() ?? 0.0,
     );
   }
 }

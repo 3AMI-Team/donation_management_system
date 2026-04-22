@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EmployeesCubit extends Cubit<EmployeesState> {
   final GetEmployeesUseCase getEmployeesUseCase;
+  static const int _pageSize = 10;
   
   List<EmployeeEntity> _allEmployees = [];
-  String _currentRoleFilter = 'All';
 
   EmployeesCubit({required this.getEmployeesUseCase}) : super(EmployeesInitial());
 
@@ -18,23 +18,78 @@ class EmployeesCubit extends Cubit<EmployeesState> {
       (failure) => emit(EmployeesError(message: failure.message)),
       (employees) {
         _allEmployees = employees;
-        _emitFilteredEmployees();
+        _emitFilteredState(role: 'All', query: '', page: 1);
       },
     );
   }
 
-  void filterByRole(String role) {
-    _currentRoleFilter = role;
-    if (_allEmployees.isNotEmpty) {
-      _emitFilteredEmployees();
+  void filterEmployees({String? role, String? query}) {
+    if (state is EmployeesLoaded) {
+      final currentState = state as EmployeesLoaded;
+      _emitFilteredState(
+        role: role ?? currentState.selectedRole,
+        query: query ?? currentState.searchQuery,
+        page: 1, // Reset to page 1 on filter/search change
+      );
     }
   }
 
-  void _emitFilteredEmployees() {
-    List<EmployeeEntity> filtered = _allEmployees;
-    if (_currentRoleFilter != 'All') {
-      filtered = _allEmployees.where((emp) => emp.role == _currentRoleFilter).toList();
+  void changePage(int page) {
+    if (state is EmployeesLoaded) {
+      final currentState = state as EmployeesLoaded;
+      if (page < 1 || page > currentState.totalPages) return;
+
+      emit(EmployeesLoaded(
+        masterEmployees: currentState.masterEmployees,
+        filteredEmployees: currentState.filteredEmployees,
+        currentPageEmployees: _getSlicedEmployees(currentState.filteredEmployees, page),
+        currentPage: page,
+        totalPages: currentState.totalPages,
+        totalCount: currentState.totalCount,
+        selectedRole: currentState.selectedRole,
+        searchQuery: currentState.searchQuery,
+      ));
     }
-    emit(EmployeesLoaded(employees: filtered, selectedRole: _currentRoleFilter));
+  }
+
+  void _emitFilteredState({required String role, required String query, required int page}) {
+    List<EmployeeEntity> filtered = _allEmployees;
+
+    // 1. Apply role filter
+    if (role != 'All') {
+      filtered = filtered.where((emp) => emp.role == role).toList();
+    }
+
+    // 2. Apply search query
+    if (query.isNotEmpty) {
+      final q = query.toLowerCase();
+      filtered = filtered.where((emp) {
+        return emp.name.toLowerCase().contains(q) ||
+               emp.email.toLowerCase().contains(q) ||
+               emp.username.toLowerCase().contains(q);
+      }).toList();
+    }
+
+    // 3. Pagination math
+    final totalCount = filtered.length;
+    final totalPages = (totalCount / _pageSize).ceil().clamp(1, 9999);
+
+    emit(EmployeesLoaded(
+      masterEmployees: _allEmployees,
+      filteredEmployees: filtered,
+      currentPageEmployees: _getSlicedEmployees(filtered, page),
+      currentPage: page,
+      totalPages: totalPages,
+      totalCount: totalCount,
+      selectedRole: role,
+      searchQuery: query,
+    ));
+  }
+
+  List<EmployeeEntity> _getSlicedEmployees(List<EmployeeEntity> source, int page) {
+    final start = (page - 1) * _pageSize;
+    final end = (start + _pageSize).clamp(0, source.length);
+    if (start >= source.length) return [];
+    return source.sublist(start, end);
   }
 }

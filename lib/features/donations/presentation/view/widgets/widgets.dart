@@ -1,5 +1,5 @@
 export 'stat_card.dart';
-export 'page_header.dart';
+export '../../../../../core/widgets/page_header.dart';
 export '../../../../../core/widgets/filter_chips.dart';
 export 'donations_table.dart';
 export 'donation_table_row.dart';
