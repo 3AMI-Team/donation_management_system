@@ -6,6 +6,7 @@ import 'package:donation_management_system/features/distributions/domain/entity/
 abstract class DistributionsRemoteDataSource {
   Future<DistributionKpisEntity> getDistributionKpis();
   Future<List<DistributionEntity>> getDistributions();
+  Future<void> addDistribution(Map<String, dynamic> distributionData);
 }
 
 class DistributionsRemoteDataSourceImpl implements DistributionsRemoteDataSource {
@@ -25,5 +26,10 @@ class DistributionsRemoteDataSourceImpl implements DistributionsRemoteDataSource
     return (response as List)
         .map((e) => DistributionEntity.fromJson(e))
         .toList();
+  }
+
+  @override
+  Future<void> addDistribution(Map<String, dynamic> distributionData) async {
+    await api.post(ServerStrings.distributions, body: distributionData);
   }
 }

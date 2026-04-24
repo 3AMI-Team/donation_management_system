@@ -22,7 +22,7 @@ class DistributionsRepoImpl implements DistributionsRepo {
       try {
         final response = await remoteDataSource.getDistributionKpis();
         return Right(response);
-      } on ServerException catch (e) {
+      } on AppException catch (e) {
         return Left(ServerFailure(message: e.message, code: e.statusCode));
       } catch (e) {
         return const Left(UnknownFailure());
@@ -38,7 +38,24 @@ class DistributionsRepoImpl implements DistributionsRepo {
       try {
         final response = await remoteDataSource.getDistributions();
         return Right(response);
-      } on ServerException catch (e) {
+      } on AppException catch (e) {
+        return Left(ServerFailure(message: e.message, code: e.statusCode));
+      } catch (e) {
+        return const Left(UnknownFailure());
+      }
+    } else {
+      return const Left(NetworkFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> addDistribution(
+      Map<String, dynamic> distributionData) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await remoteDataSource.addDistribution(distributionData);
+        return const Right(null);
+      } on AppException catch (e) {
         return Left(ServerFailure(message: e.message, code: e.statusCode));
       } catch (e) {
         return const Left(UnknownFailure());

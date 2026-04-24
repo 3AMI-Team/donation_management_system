@@ -3,6 +3,7 @@ import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/distributions/presentation/view/widgets/add_new_distribution.dart';
 import 'package:donation_management_system/features/distributions/presentation/view/widgets/dist_table.dart';
 import 'package:donation_management_system/features/distributions/presentation/view/widgets/distributin_kpis_cards.dart';
+import 'package:donation_management_system/features/distributions/presentation/view_model/add_distribution_cubit/add_distribution_cubit.dart';
 import 'package:donation_management_system/features/distributions/presentation/view_model/distribution_stats_cubit/distribution_stats_cubit.dart';
 import 'package:donation_management_system/features/distributions/presentation/view_model/distributions_cubit/distributions_cubit.dart';
 import 'package:donation_management_system/features/distributions/presentation/view_model/distributions_cubit/distributions_state.dart';
@@ -22,6 +23,9 @@ class DistributionView extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => sl<DistributionsCubit>()..getDistributions(),
+        ),
+        BlocProvider(
+          create: (context) => sl<AddDistributionCubit>(),
         ),
       ],
       child: Scaffold(

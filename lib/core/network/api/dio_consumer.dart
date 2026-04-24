@@ -149,7 +149,7 @@ class DioConsumer implements ApiConsumer {
       case 401:
         throw UnauthorizedException();
       case 403:
-        throw ForbiddenException();
+        throw ForbiddenException(message: message);
       case 404:
         throw NotFoundException();
       case 422:
