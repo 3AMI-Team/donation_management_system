@@ -4,6 +4,8 @@ import 'package:donation_management_system/features/distributions/presentation/v
 import 'package:donation_management_system/features/distributions/presentation/view/widgets/dist_table.dart';
 import 'package:donation_management_system/features/distributions/presentation/view/widgets/distributin_kpis_cards.dart';
 import 'package:donation_management_system/features/distributions/presentation/view_model/distribution_stats_cubit/distribution_stats_cubit.dart';
+import 'package:donation_management_system/features/distributions/presentation/view_model/distributions_cubit/distributions_cubit.dart';
+import 'package:donation_management_system/features/distributions/presentation/view_model/distributions_cubit/distributions_state.dart';
 import 'package:donation_management_system/features/donations/presentation/view/widgets/pagination.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,8 +14,16 @@ class DistributionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<DistributionStatsCubit>()..getDistributionKpis(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              sl<DistributionStatsCubit>()..getDistributionKpis(),
+        ),
+        BlocProvider(
+          create: (context) => sl<DistributionsCubit>()..getDistributions(),
+        ),
+      ],
       child: Scaffold(
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
@@ -51,62 +61,65 @@ class DistribtionViewBody extends StatefulWidget {
 }
 
 class _DistribtionViewBodyState extends State<DistribtionViewBody> {
-  String _selectedFilter = 'All';
-
   final TextEditingController _searchController = TextEditingController();
-
-  int _currentPage = 1;
-
-  final List<String> _filters = ["All", "Completed", "Pending", "Processing"];
+  final List<String> _filters = ["All", "Delivered", "Pending"];
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          flex: 3,
-          child: Column(
+    return BlocBuilder<DistributionsCubit, DistributionsState>(
+      builder: (context, state) {
+        if (state is DistributionsLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state is DistributionsError) {
+          return Center(child: Text(state.message));
+        }
+
+        if (state is DistributionsLoaded) {
+          return Column(
             children: [
               FilterChips(
                 hintText: 'Search ...',
                 filters: _filters,
-                selectedFilter: _selectedFilter,
+                selectedFilter: state.selectedStatus,
                 onFilterSelected: (filter) {
-                  setState(() {
-                    _selectedFilter = filter;
-                  });
+                  context
+                      .read<DistributionsCubit>()
+                      .filterDistributions(status: filter);
                 },
                 searchController: _searchController,
-                onSearchChanged: (value) {},
+                onSearchChanged: (value) {
+                  context
+                      .read<DistributionsCubit>()
+                      .filterDistributions(query: value);
+                },
                 onSortPressed: () {},
               ),
               Gap(16.h),
-              const DistributionTable(),
+              DistributionTable(distributions: state.currentPageDistributions),
               Gap(16.h),
               Pagination(
-                currentPage: _currentPage,
-                totalItems: 45,
-                itemsPerPage: 5,
+                currentPage: state.currentPage,
+                totalItems: state.totalCount,
+                itemsPerPage: 10,
                 onPreviousPressed: () {
-                  if (_currentPage > 1) {
-                    setState(() {
-                      _currentPage--;
-                    });
-                  }
+                  context
+                      .read<DistributionsCubit>()
+                      .changePage(state.currentPage - 1);
                 },
                 onNextPressed: () {
-                  if (_currentPage < 9) {
-                    setState(() {
-                      _currentPage++;
-                    });
-                  }
+                  context
+                      .read<DistributionsCubit>()
+                      .changePage(state.currentPage + 1);
                 },
               ),
             ],
-          ),
-        ),
-      ],
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 }

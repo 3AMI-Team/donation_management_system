@@ -87,7 +87,9 @@ import 'package:donation_management_system/features/distributions/data/data_sour
 import 'package:donation_management_system/features/distributions/data/repo/distributions_repo_impl.dart';
 import 'package:donation_management_system/features/distributions/domain/repo/distributions_repo.dart';
 import 'package:donation_management_system/features/distributions/domain/use_case/get_distribution_kpis_use_case.dart';
+import 'package:donation_management_system/features/distributions/domain/use_case/get_distributions_use_case.dart';
 import 'package:donation_management_system/features/distributions/presentation/view_model/distribution_stats_cubit/distribution_stats_cubit.dart';
+import 'package:donation_management_system/features/distributions/presentation/view_model/distributions_cubit/distributions_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -332,9 +334,11 @@ void _initDistributions() {
   // Cubits
   sl.registerFactory(
       () => DistributionStatsCubit(getDistributionKpisUseCase: sl()));
+  sl.registerFactory(() => DistributionsCubit(getDistributionsUseCase: sl()));
 
   // Use Cases
   sl.registerLazySingleton(() => GetDistributionKpisUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetDistributionsUseCase(repository: sl()));
 
   // Repository
   sl.registerLazySingleton<DistributionsRepo>(
