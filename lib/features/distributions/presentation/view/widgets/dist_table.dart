@@ -1,73 +1,33 @@
 import 'package:donation_management_system/core/widgets/widgets.dart';
-import 'package:donation_management_system/features/distributions/data/models/dist_table_model.dart';
-import 'package:donation_management_system/features/donors/presentation/view/widgets/donor_data_row.dart';
+import 'package:donation_management_system/features/distributions/domain/entity/distribution_entity.dart';
 
 class DistributionTable extends StatelessWidget {
-  const DistributionTable({super.key});
+  final List<DistributionEntity> distributions;
+
+  const DistributionTable({super.key, required this.distributions});
 
   final List<TableHeader> headerCells = const [
     TableHeader(text: 'Case', flex: 2),
     TableHeader(text: 'Donation Source', flex: 1),
     TableHeader(text: 'Amount', flex: 1),
     TableHeader(text: 'Date', flex: 1),
-    TableHeader(text: 'Empolyee', flex: 1),
+    TableHeader(text: 'Employee', flex: 1),
     TableHeader(text: 'Status', flex: 1),
-    TableHeader(text: 'Actions', flex: 0),
+    TableHeader(text: 'Actions', flex: 1, textAlign: TextAlign.right),
   ];
 
   @override
   Widget build(BuildContext context) {
     return CustomTable(
       headerCells: headerCells,
-      dataRow: [
-        DistributionTableModel(
-          caseName: "أحمد محمد علي",
-          donorName: "مؤسسة الخير",
-          empolyeeName: "سارة محمود",
-          amount: 1500.0,
-          date: DateTime.now(),
-          status: DistributionStatus.completed,
-        ),
-        DistributionTableModel(
-          caseName: "فاطمة إبراهيم",
-          donorName: "فاعل خير",
-          empolyeeName: "خالد جابر",
-          amount: 500.0,
-          date: DateTime.now().subtract(const Duration(days: 1)),
-          status: DistributionStatus.pending,
-        ),
-        DistributionTableModel(
-          caseName: "مستشفى الأمل",
-          donorName: "شركة توريدات",
-          empolyeeName: "منى القحطاني",
-          amount: 3000.0,
-          date: DateTime.now().subtract(const Duration(days: 3)),
-          status: DistributionStatus.processing,
-        ),
-        DistributionTableModel(
-          caseName: "عائلة بورسلي",
-          donorName: "صندوق الزكاة",
-          empolyeeName: "عمر فاروق",
-          amount: 200.0,
-          date: DateTime.now().subtract(const Duration(days: 5)),
-          status: DistributionStatus.draft,
-        ),
-        DistributionTableModel(
-          caseName: "ياسر جلال",
-          donorName: "فرد مستقل",
-          empolyeeName: "ليلى حسن",
-          amount: 1250.75,
-          date: DateTime.now(),
-          status: DistributionStatus.completed,
-        ),
-      ],
+      dataRow: distributions,
       itemBuilder: (item) => DistributionDataRow(distribution: item),
     );
   }
 }
 
 class DistributionDataRow extends StatelessWidget {
-  final DistributionTableModel distribution;
+  final DistributionEntity distribution;
 
   const DistributionDataRow({super.key, required this.distribution});
 
@@ -82,7 +42,7 @@ class DistributionDataRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // case name with avatar
+          // Case Name column
           Expanded(
             flex: 2,
             child: Row(
@@ -90,9 +50,10 @@ class DistributionDataRow extends StatelessWidget {
                 CircleAvatar(
                   radius: 18.r,
                   backgroundColor: AppColors.primary.withOpacity(0.1),
-
                   child: Text(
-                    distribution.donorName.substring(0, 1).toUpperCase(),
+                    distribution.caseName.isNotEmpty
+                        ? distribution.caseName.substring(0, 1).toUpperCase()
+                        : '?',
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
@@ -102,73 +63,220 @@ class DistributionDataRow extends StatelessWidget {
                 ),
                 Gap(10.w),
                 Expanded(
-                  child: Text(
-                    distribution.caseName,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textPrimary,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        distribution.caseName,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        'ID: #${distribution.id}',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
 
+          // Donation Source column
           Expanded(
             flex: 1,
             child: Text(
               distribution.donorName,
-              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
-            ),
-          ),
-
-          //case amount
-          Expanded(
-            flex: 1,
-            child: Text(
-              distribution.amount.toString(),
-              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
-            ),
-          ),
-
-          //case Contact info
-          Expanded(
-            flex: 1,
-            child: Text(
-              '${distribution.date.day}/${distribution.date.month}/${distribution.date.year}',
               style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w500,
                 color: AppColors.textPrimary,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+
+          // Amount column
+          Expanded(
+            flex: 1,
+            child: Text(
+              '${distribution.amount.toStringAsFixed(2)} EGP',
+              style: TextStyle(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
               ),
             ),
           ),
 
+          // Date column
           Expanded(
             flex: 1,
             child: Text(
-              overflow: TextOverflow.fade,
-              distribution.empolyeeName,
-              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
+              '${distribution.distributionDate.day}/${distribution.distributionDate.month}/${distribution.distributionDate.year}',
+              style: TextStyle(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textSecondary,
+              ),
             ),
           ),
 
-          //case registration date
+          // Employee column
           Expanded(
-            //Donor registration date
             flex: 1,
             child: Text(
-              distribution.status.name,
-              style: TextStyle(fontSize: 13.sp, color: AppColors.textSecondary),
+              distribution.handledByEmployeeName,
+              style: TextStyle(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
 
-          //Actions buttons
-          ActionsButtons(),
+          // Status column
+          Expanded(
+            flex: 1,
+            child: _StatusBadge(status: distribution.status),
+          ),
+
+          // Actions column
+          Expanded(
+            flex: 1,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: _DistributionActions(distribution: distribution),
+            ),
+          ),
         ],
       ),
+    );
+  }
+}
+
+class _StatusBadge extends StatelessWidget {
+  final String status;
+
+  const _StatusBadge({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    Color bg;
+    Color fg;
+
+    switch (status.toLowerCase()) {
+      case 'delivered':
+      case 'completed':
+        bg = const Color(0xFFDCFCE7);
+        fg = const Color(0xFF166534);
+        break;
+      case 'pending':
+        bg = const Color(0xFFFEF9C3);
+        fg = const Color(0xFF854D0E);
+        break;
+      case 'processing':
+        bg = const Color(0xFFDBEAFE);
+        fg = const Color(0xFF1E40AF);
+        break;
+      default:
+        bg = AppColors.border.withOpacity(0.3);
+        fg = AppColors.textSecondary;
+    }
+
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        child: Text(
+          status,
+          style: TextStyle(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w600,
+            color: fg,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DistributionActions extends StatelessWidget {
+  final DistributionEntity distribution;
+
+  const _DistributionActions({required this.distribution});
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      icon: Icon(Icons.more_vert, size: 20.sp, color: AppColors.textSecondary),
+      onSelected: (value) {
+        switch (value) {
+          case 'view':
+            // TODO: Implement view details
+            break;
+          case 'edit':
+            // TODO: Implement edit
+            break;
+          case 'delete':
+            showDialog(
+              context: context,
+              builder: (dialogContext) => DeleteConfirmationDialog(
+                title: 'Delete Distribution',
+                content:
+                    'Are you sure you want to delete this distribution for ${distribution.caseName}? This action cannot be undone.',
+                onDeletePressed: () {
+                  // TODO: Implement delete functionality when API is ready
+                },
+              ),
+            );
+            break;
+        }
+      },
+      itemBuilder: (context) => [
+        const PopupMenuItem(
+          value: 'view',
+          child: Row(
+            children: [
+              Icon(Icons.visibility_outlined, size: 18),
+              Gap(8),
+              Text('View Details'),
+            ],
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'edit',
+          child: Row(
+            children: [
+              Icon(Icons.edit_outlined, size: 18),
+              Gap(8),
+              Text('Edit'),
+            ],
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'delete',
+          child: Row(
+            children: [
+              Icon(Icons.delete_outline, size: 18, color: Colors.red),
+              Gap(8),
+              Text('Delete', style: TextStyle(color: Colors.red)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

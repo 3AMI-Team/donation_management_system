@@ -30,4 +30,8 @@ class ServerStrings {
   // Employees
   static const String employees = "api/Employees";
   static const String employeesKPIs = "api/Employees/kpis";
+
+  // Distributions
+  static const String distributions = "api/Distributions";
+  static const String distributionKPIs = "api/Distributions/kpis";
 }

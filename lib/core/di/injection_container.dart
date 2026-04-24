@@ -82,6 +82,16 @@ import 'package:donation_management_system/features/employees/domain/use_case/ge
 import 'package:donation_management_system/features/employees/presentation/view_model/add_employee_cubit/add_employee_cubit.dart';
 import 'package:donation_management_system/features/employees/presentation/view_model/employee_stats_cubit/employee_stats_cubit.dart';
 import 'package:donation_management_system/features/employees/presentation/view_model/employees_cubit/employees_cubit.dart';
+// Distributions
+import 'package:donation_management_system/features/distributions/data/data_source/distributions_remote_data_source.dart';
+import 'package:donation_management_system/features/distributions/data/repo/distributions_repo_impl.dart';
+import 'package:donation_management_system/features/distributions/domain/repo/distributions_repo.dart';
+import 'package:donation_management_system/features/distributions/domain/use_case/get_distribution_kpis_use_case.dart';
+import 'package:donation_management_system/features/distributions/domain/use_case/get_distributions_use_case.dart';
+import 'package:donation_management_system/features/distributions/domain/use_case/add_distribution_use_case.dart';
+import 'package:donation_management_system/features/distributions/presentation/view_model/distribution_stats_cubit/distribution_stats_cubit.dart';
+import 'package:donation_management_system/features/distributions/presentation/view_model/distributions_cubit/distributions_cubit.dart';
+import 'package:donation_management_system/features/distributions/presentation/view_model/add_distribution_cubit/add_distribution_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -94,6 +104,7 @@ Future<void> init() async {
   _initDonations();
   _initCategories();
   _initEmployees();
+  _initDistributions();
   _initExternal();
 }
 
@@ -319,4 +330,35 @@ void _initExternal() {
     sl<ApiInterceptor>(),
     sl<AuthInterceptor>(),
   ]);
+}
+
+void _initDistributions() {
+  // Cubits
+  sl.registerFactory(
+      () => DistributionStatsCubit(getDistributionKpisUseCase: sl()));
+  sl.registerFactory(() => DistributionsCubit(getDistributionsUseCase: sl()));
+  sl.registerFactory(() => AddDistributionCubit(
+        addDistributionUseCase: sl(),
+        getCasesUseCase: sl(),
+        getDonationsUseCase: sl(),
+        getEmployeesUseCase: sl(),
+      ));
+
+  // Use Cases
+  sl.registerLazySingleton(() => GetDistributionKpisUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetDistributionsUseCase(repository: sl()));
+  sl.registerLazySingleton(() => AddDistributionUseCase(repository: sl()));
+
+  // Repository
+  sl.registerLazySingleton<DistributionsRepo>(
+    () => DistributionsRepoImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+  // Data Source
+  sl.registerLazySingleton<DistributionsRemoteDataSource>(
+    () => DistributionsRemoteDataSourceImpl(api: sl()),
+  );
 }
