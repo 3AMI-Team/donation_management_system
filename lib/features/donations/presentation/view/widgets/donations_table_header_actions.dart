@@ -9,9 +9,7 @@ class DonationsTableHeaderActions extends StatelessWidget {
     return PageHeader(
       title: 'Donations Tracking',
       subtitle: 'Monitor and manage all donations in one place',
-      outlinedButtonText: 'Export CSV',
       filledButtonText: 'New Donation',
-      onOutlinedPressed: () {},
       onFilledPressed: () {},
     );
   }

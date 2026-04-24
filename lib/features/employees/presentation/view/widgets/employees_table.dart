@@ -1,5 +1,9 @@
 import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/employees/domain/entity/employee_entity.dart';
+import 'package:donation_management_system/features/employees/presentation/view/widgets/add_new_employee.dart';
+import 'package:donation_management_system/features/employees/presentation/view_model/add_employee_cubit/add_employee_cubit.dart';
+import 'package:donation_management_system/features/employees/presentation/view_model/employees_cubit/employees_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EmployeesTable extends StatelessWidget {
   final List<EmployeeEntity> employees;
@@ -163,15 +167,39 @@ class _EmployeeActions extends StatelessWidget {
     return PopupMenuButton<String>(
       icon: Icon(Icons.more_vert, size: 20.sp, color: AppColors.textSecondary),
       onSelected: (value) {
+        final employeesCubit = context.read<EmployeesCubit>();
+        final addEmployeeCubit = context.read<AddEmployeeCubit>();
+
         switch (value) {
           case 'view':
             // TODO: Implement view details
             break;
           case 'edit':
-            // TODO: Implement edit employee
+            showDialog(
+              context: context,
+              builder: (dialogContext) {
+                return MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(value: addEmployeeCubit),
+                    BlocProvider.value(value: employeesCubit),
+                  ],
+                  child: AddEmployeeDialog(employee: employee),
+                );
+              },
+            );
             break;
           case 'delete':
-            // TODO: Implement delete employee
+            showDialog(
+              context: context,
+              builder: (dialogContext) => DeleteConfirmationDialog(
+                title: 'Delete Employee',
+                content:
+                    'Are you sure you want to delete ${employee.name}? This action cannot be undone.',
+                onDeletePressed: () {
+                  employeesCubit.deleteEmployee(employee.id);
+                },
+              ),
+            );
             break;
         }
       },

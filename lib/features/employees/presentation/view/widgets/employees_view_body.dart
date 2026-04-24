@@ -57,7 +57,7 @@ class _EmployeesViewBodyState extends State<EmployeesViewBody> {
                 searchController: _searchController,
                 onSearchChanged: (query) {
                   setState(() {
-                    _currentPage = 1; // Locally keep track if needed, but Cubit handles it
+                    _currentPage = 1; 
                   });
                   context.read<EmployeesCubit>().filterEmployees(query: query);
                 },

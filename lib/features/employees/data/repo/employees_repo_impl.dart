@@ -34,6 +34,39 @@ class EmployeesRepoImpl implements EmployeesRepo {
   }
 
   @override
+  Future<Either<Failure, void>> updateEmployee(
+      int id, AddEmployeeParams params) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await remoteDataSource.updateEmployee(id, params);
+        return const Right(null);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(message: e.message, code: e.statusCode));
+      } catch (e) {
+        return const Left(UnknownFailure());
+      }
+    } else {
+      return const Left(NetworkFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteEmployee(int id) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await remoteDataSource.deleteEmployee(id);
+        return const Right(null);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(message: e.message, code: e.statusCode));
+      } catch (e) {
+        return const Left(UnknownFailure());
+      }
+    } else {
+      return const Left(NetworkFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, List<EmployeeEntity>>> getEmployees() async {
     if (await networkInfo.isConnected) {
       try {

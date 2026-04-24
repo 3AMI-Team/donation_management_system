@@ -1,15 +1,28 @@
 import 'package:donation_management_system/features/employees/domain/entity/employee_entity.dart';
 import 'package:donation_management_system/features/employees/domain/use_case/get_employees_use_case.dart';
+import 'package:donation_management_system/features/employees/domain/use_case/delete_employee_use_case.dart';
 import 'package:donation_management_system/features/employees/presentation/view_model/employees_cubit/employees_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EmployeesCubit extends Cubit<EmployeesState> {
   final GetEmployeesUseCase getEmployeesUseCase;
+  final DeleteEmployeeUseCase deleteEmployeeUseCase;
   static const int _pageSize = 10;
   
   List<EmployeeEntity> _allEmployees = [];
 
-  EmployeesCubit({required this.getEmployeesUseCase}) : super(EmployeesInitial());
+  EmployeesCubit({
+    required this.getEmployeesUseCase,
+    required this.deleteEmployeeUseCase,
+  }) : super(EmployeesInitial());
+
+  Future<void> deleteEmployee(int id) async {
+    final result = await deleteEmployeeUseCase(id);
+    result.fold(
+      (failure) => emit(EmployeesError(message: failure.message)),
+      (_) => getEmployees(), // Refresh list on success
+    );
+  }
 
   Future<void> getEmployees() async {
     emit(EmployeesLoading());

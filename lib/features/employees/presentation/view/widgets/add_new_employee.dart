@@ -1,7 +1,9 @@
 import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/employees/domain/entity/add_employee_params.dart';
+import 'package:donation_management_system/features/employees/domain/entity/employee_entity.dart';
 import 'package:donation_management_system/features/employees/presentation/view_model/add_employee_cubit/add_employee_cubit.dart';
 import 'package:donation_management_system/features/employees/presentation/view_model/add_employee_cubit/add_employee_state.dart';
+import 'package:donation_management_system/features/employees/presentation/view_model/employees_cubit/employees_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddNewEmployee extends StatelessWidget {
@@ -13,12 +15,16 @@ class AddNewEmployee extends StatelessWidget {
       text: "Add New Employee",
       onTap: () {
         final addEmployeeCubit = context.read<AddEmployeeCubit>();
+        final employeesCubit = context.read<EmployeesCubit>();
 
         showDialog(
           context: context,
           builder: (dialogContext) {
-            return BlocProvider.value(
-              value: addEmployeeCubit,
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: addEmployeeCubit),
+                BlocProvider.value(value: employeesCubit),
+              ],
               child: const AddEmployeeDialog(),
             );
           },
@@ -29,21 +35,35 @@ class AddNewEmployee extends StatelessWidget {
 }
 
 class AddEmployeeDialog extends StatefulWidget {
-  const AddEmployeeDialog({super.key});
+  final EmployeeEntity? employee;
+
+  const AddEmployeeDialog({super.key, this.employee});
 
   @override
   State<AddEmployeeDialog> createState() => _AddEmployeeDialogState();
 }
 
 class _AddEmployeeDialogState extends State<AddEmployeeDialog> {
-  final _nameController = TextEditingController();
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _addressController = TextEditingController();
-  final _emailController = TextEditingController();
+  late final TextEditingController _nameController;
+  late final TextEditingController _usernameController;
+  late final TextEditingController _passwordController;
+  late final TextEditingController _phoneController;
+  late final TextEditingController _addressController;
+  late final TextEditingController _emailController;
 
-  String selectedRole = "Supervisor";
+  late String selectedRole;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.employee?.name);
+    _usernameController = TextEditingController(text: widget.employee?.username);
+    _passwordController = TextEditingController();
+    _phoneController = TextEditingController(text: widget.employee?.phone);
+    _addressController = TextEditingController(text: widget.employee?.address);
+    _emailController = TextEditingController(text: widget.employee?.email);
+    selectedRole = widget.employee?.role ?? "Supervisor";
+  }
 
   @override
   void dispose() {
@@ -58,14 +78,22 @@ class _AddEmployeeDialogState extends State<AddEmployeeDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isEditing = widget.employee != null;
+
     return BlocListener<AddEmployeeCubit, AddEmployeeState>(
       listener: (context, state) {
         if (state is AddEmployeeSuccess) {
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Employee added successfully!')),
+            SnackBar(
+              content: Text(
+                isEditing
+                    ? 'Employee updated successfully!'
+                    : 'Employee added successfully!',
+              ),
+            ),
           );
-          // TODO: context.read<EmployeesCubit>().refresh(); 
+          context.read<EmployeesCubit>().getEmployees();
         } else if (state is AddEmployeeError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),
@@ -80,7 +108,7 @@ class _AddEmployeeDialogState extends State<AddEmployeeDialog> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Add New Employee',
+              isEditing ? 'Edit Employee' : 'Add New Employee',
               style: AppTypography.h2.copyWith(fontSize: 20),
             ),
             IconButton(
@@ -129,7 +157,7 @@ class _AddEmployeeDialogState extends State<AddEmployeeDialog> {
                     Expanded(
                       child: _buildInputField(
                         "Password",
-                        "Enter password",
+                        isEditing ? "Leave blank to keep current" : "Enter password",
                         controller: _passwordController,
                       ),
                     ),
@@ -187,17 +215,23 @@ class _AddEmployeeDialogState extends State<AddEmployeeDialog> {
                 onPressed: state is AddEmployeeLoading
                     ? null
                     : () {
-                        context.read<AddEmployeeCubit>().addEmployee(
-                              AddEmployeeParams(
-                                name: _nameController.text,
-                                username: _usernameController.text,
-                                password: _passwordController.text,
-                                role: selectedRole,
-                                phone: _phoneController.text,
-                                address: _addressController.text,
-                                email: _emailController.text,
-                              ),
-                            );
+                        final params = AddEmployeeParams(
+                          name: _nameController.text,
+                          username: _usernameController.text,
+                          password: _passwordController.text,
+                          role: selectedRole,
+                          phone: _phoneController.text,
+                          address: _addressController.text,
+                          email: _emailController.text,
+                        );
+
+                        if (isEditing) {
+                          context
+                              .read<AddEmployeeCubit>()
+                              .updateEmployee(widget.employee!.id, params);
+                        } else {
+                          context.read<AddEmployeeCubit>().addEmployee(params);
+                        }
                       },
                 child: state is AddEmployeeLoading
                     ? const SizedBox(
@@ -208,9 +242,9 @@ class _AddEmployeeDialogState extends State<AddEmployeeDialog> {
                           strokeWidth: 2,
                         ),
                       )
-                    : const Text(
-                        "Save Employee",
-                        style: TextStyle(color: Colors.white),
+                    : Text(
+                        isEditing ? "Update Employee" : "Save Employee",
+                        style: const TextStyle(color: Colors.white),
                       ),
               );
             },

@@ -10,3 +10,4 @@ export 'package:gap/gap.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:donation_management_system/core/theme/typography.dart';
 export 'package:donation_management_system/core/theme/colors.dart';
+export 'delete_confirmation_dialog.dart';

@@ -37,7 +37,6 @@ class EmployeesView extends StatelessWidget {
                   return PageHeader(
                     title: 'Employee Directory',
                     subtitle: 'Manage user roles, access permissions, and team status.',
-                    outlinedButtonText: 'Export CSV',
                     filledButtonText: 'New Employee',
                     onFilledPressed: () {
                       final addEmployeeCubit = context.read<AddEmployeeCubit>();

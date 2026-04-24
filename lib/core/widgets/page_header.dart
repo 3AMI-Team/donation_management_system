@@ -6,18 +6,14 @@ import 'package:donation_management_system/core/theme/colors.dart';
 class PageHeader extends StatelessWidget {
   final String title;
   final String subtitle;
-  final String outlinedButtonText;
   final String filledButtonText;
-  final VoidCallback? onOutlinedPressed;
   final VoidCallback? onFilledPressed;
 
   const PageHeader({
     super.key,
     required this.title,
     required this.subtitle,
-    required this.outlinedButtonText,
     required this.filledButtonText,
-    this.onOutlinedPressed,
     this.onFilledPressed,
   });
 
@@ -51,53 +47,24 @@ class PageHeader extends StatelessWidget {
               ],
             ),
           ),
-          Row(
-            children: [
-              OutlinedButton(
-                onPressed: onOutlinedPressed,
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: AppColors.primary, width: 2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20.w,
-                    vertical: 14.h,
-                  ),
-                ),
-                child: Text(
-                  outlinedButtonText,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
-                  ),
-                ),
+          ElevatedButton(
+            onPressed: onFilledPressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
               ),
-              Gap(12.w),
-              ElevatedButton(
-                onPressed: onFilledPressed,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20.w,
-                    vertical: 14.h,
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  filledButtonText,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
+              elevation: 0,
+            ),
+            child: Text(
+              filledButtonText,
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
               ),
-            ],
+            ),
           ),
         ],
       ),

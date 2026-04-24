@@ -6,6 +6,9 @@ import 'package:donation_management_system/features/employees/domain/entity/empl
 
 abstract class EmployeesRepo {
   Future<Either<Failure, void>> addEmployee(AddEmployeeParams params);
+  Future<Either<Failure, void>> updateEmployee(
+      int id, AddEmployeeParams params);
+  Future<Either<Failure, void>> deleteEmployee(int id);
   Future<Either<Failure, List<EmployeeEntity>>> getEmployees();
   Future<Either<Failure, EmployeeKpisEntity>> getEmployeeKpis();
 }

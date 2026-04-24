@@ -6,6 +6,8 @@ import 'package:donation_management_system/features/employees/domain/entity/empl
 
 abstract class EmployeesRemoteDataSource {
   Future<void> addEmployee(AddEmployeeParams params);
+  Future<void> updateEmployee(int id, AddEmployeeParams params);
+  Future<void> deleteEmployee(int id);
   Future<List<EmployeeEntity>> getEmployees();
   Future<EmployeeKpisEntity> getEmployeeKpis();
 }
@@ -18,6 +20,16 @@ class EmployeesRemoteDataSourceImpl implements EmployeesRemoteDataSource {
   @override
   Future<void> addEmployee(AddEmployeeParams params) async {
     await api.post(ServerStrings.employees, body: params.toJson());
+  }
+
+  @override
+  Future<void> updateEmployee(int id, AddEmployeeParams params) async {
+    await api.put("${ServerStrings.employees}/$id", body: params.toJson());
+  }
+
+  @override
+  Future<void> deleteEmployee(int id) async {
+    await api.delete("${ServerStrings.employees}/$id");
   }
 
   @override

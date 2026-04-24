@@ -75,6 +75,8 @@ import 'package:donation_management_system/features/employees/data/data_source/e
 import 'package:donation_management_system/features/employees/data/repo/employees_repo_impl.dart';
 import 'package:donation_management_system/features/employees/domain/repo/employees_repo.dart';
 import 'package:donation_management_system/features/employees/domain/use_case/add_employee_use_case.dart';
+import 'package:donation_management_system/features/employees/domain/use_case/update_employee_use_case.dart';
+import 'package:donation_management_system/features/employees/domain/use_case/delete_employee_use_case.dart';
 import 'package:donation_management_system/features/employees/domain/use_case/get_employees_use_case.dart';
 import 'package:donation_management_system/features/employees/domain/use_case/get_employee_kpis_use_case.dart';
 import 'package:donation_management_system/features/employees/presentation/view_model/add_employee_cubit/add_employee_cubit.dart';
@@ -263,12 +265,20 @@ void _initCategories() {
 
 void _initEmployees() {
   // Cubit
-  sl.registerFactory(() => AddEmployeeCubit(addEmployeeUseCase: sl()));
-  sl.registerFactory(() => EmployeesCubit(getEmployeesUseCase: sl()));
+  sl.registerFactory(() => AddEmployeeCubit(
+        addEmployeeUseCase: sl(),
+        updateEmployeeUseCase: sl(),
+      ));
+  sl.registerFactory(() => EmployeesCubit(
+        getEmployeesUseCase: sl(),
+        deleteEmployeeUseCase: sl(),
+      ));
   sl.registerFactory(() => EmployeeStatsCubit(getEmployeeKpisUseCase: sl()));
 
   // Use Case
   sl.registerLazySingleton(() => AddEmployeeUseCase(repository: sl()));
+  sl.registerLazySingleton(() => UpdateEmployeeUseCase(repository: sl()));
+  sl.registerLazySingleton(() => DeleteEmployeeUseCase(repository: sl()));
   sl.registerLazySingleton(() => GetEmployeesUseCase(repository: sl()));
   sl.registerLazySingleton(() => GetEmployeeKpisUseCase(repository: sl()));
 
