@@ -1,6 +1,12 @@
 import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/cases/domain/entity/case_entity.dart';
 import 'package:donation_management_system/features/donors/presentation/view/widgets/donor_data_row.dart';
+import 'package:donation_management_system/features/cases/presentation/view/widgets/add_new_case.dart';
+import 'package:donation_management_system/features/cases/presentation/view_model/add_case_cubit/add_case_cubit.dart';
+import 'package:donation_management_system/features/cases/presentation/view_model/cases_cubit/cases_cubit.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/categories_bloc/categories_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 
 class CaseDataRow extends StatelessWidget {
   final CaseEntity caseEntity;
@@ -35,7 +41,7 @@ class CaseDataRow extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              caseEntity.description,
+              caseEntity.name,
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
@@ -45,11 +51,11 @@ class CaseDataRow extends StatelessWidget {
             ),
           ),
 
-          // Amount
+          // Amount -> CategoryName
           Expanded(
             flex: 1,
             child: Text(
-              '\$${caseEntity.amount.toStringAsFixed(2)}',
+              caseEntity.categoryName,
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
@@ -62,7 +68,7 @@ class CaseDataRow extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Text(
-              '${caseEntity.date.day}/${caseEntity.date.month}/${caseEntity.date.year}',
+              '${caseEntity.registDate.day}/${caseEntity.registDate.month}/${caseEntity.registDate.year}',
               style: TextStyle(fontSize: 13.sp, color: AppColors.textSecondary),
             ),
           ),
@@ -97,7 +103,57 @@ class CaseDataRow extends StatelessWidget {
           ),
 
           // Actions
-          const ActionsButtons(),
+          CaseActionsButtons(caseEntity: caseEntity),
+        ],
+      ),
+    );
+  }
+}
+
+class CaseActionsButtons extends StatelessWidget {
+  final CaseEntity caseEntity;
+  const CaseActionsButtons({super.key, required this.caseEntity});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 40.w,
+      child: PopupMenuButton<String>(
+        icon: Icon(
+          Icons.more_vert,
+          size: 20.sp,
+          color: AppColors.textSecondary,
+        ),
+        onSelected: (value) {
+          switch (value) {
+            case 'edit':
+              showDialog(
+                context: context,
+                builder: (dialogContext) {
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider.value(value: context.read<AddCaseCubit>()),
+                      BlocProvider.value(value: context.read<CasesCubit>()),
+                      BlocProvider.value(value: context.read<CategoriesBloc>()),
+                    ],
+                    child: AddCaseDialog(caseEntity: caseEntity),
+                  );
+                },
+              );
+              break;
+          }
+        },
+        itemBuilder: (context) => [
+          const PopupMenuItem(
+            value: 'edit',
+            child: Row(
+              children: [
+                Icon(Icons.edit_outlined, size: 18),
+                Gap(8),
+                Text('Edit'),
+              ],
+            ),
+          ),
         ],
       ),
     );

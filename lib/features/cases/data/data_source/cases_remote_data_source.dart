@@ -8,6 +8,7 @@ abstract class CasesRemoteDataSource {
   Future<CasesResponseModel> getCases();
   Future<CaseKpisModel> getCaseKpis();
   Future<void> addCase(AddCaseParams params);
+  Future<void> updateCase(int id, AddCaseParams params);
 }
 
 class CasesRemoteDataSourceImpl implements CasesRemoteDataSource {
@@ -30,5 +31,10 @@ class CasesRemoteDataSourceImpl implements CasesRemoteDataSource {
   @override
   Future<void> addCase(AddCaseParams params) async {
     await api.post(ServerStrings.cases, body: params.toJson());
+  }
+
+  @override
+  Future<void> updateCase(int id, AddCaseParams params) async {
+    await api.put("${ServerStrings.cases}/$id", body: params.toJson());
   }
 }

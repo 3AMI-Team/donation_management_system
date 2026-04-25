@@ -5,10 +5,13 @@ import 'package:donation_management_system/features/cases/presentation/view_mode
 import 'package:donation_management_system/features/categories/presentation/view_model/categories_bloc/categories_bloc.dart';
 import 'package:donation_management_system/features/categories/presentation/view_model/categories_bloc/categories_state.dart';
 import 'package:donation_management_system/features/cases/presentation/view_model/cases_cubit/cases_cubit.dart';
+import 'package:donation_management_system/features/cases/domain/entity/case_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddNewCase extends StatelessWidget {
-  const AddNewCase({super.key});
+  final CaseEntity? caseEntity;
+  
+  const AddNewCase({super.key, this.caseEntity});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,7 @@ class AddNewCase extends StatelessWidget {
                 BlocProvider.value(value: casesCubit),
                 BlocProvider.value(value: categoriesBloc),
               ],
-              child: const AddCaseDialog(),
+              child: AddCaseDialog(caseEntity: caseEntity),
             );
           },
         );
@@ -38,7 +41,8 @@ class AddNewCase extends StatelessWidget {
 }
 
 class AddCaseDialog extends StatefulWidget {
-  const AddCaseDialog({super.key});
+  final CaseEntity? caseEntity;
+  const AddCaseDialog({super.key, this.caseEntity});
 
   @override
   State<AddCaseDialog> createState() => _AddCaseDialogState();
@@ -52,6 +56,20 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
 
   String selectedStatus = "Approved";
   int? selectedCategoryId;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.caseEntity != null) {
+      _nameController.text = widget.caseEntity!.name;
+      _phoneController.text = widget.caseEntity!.phone;
+      _addressController.text = widget.caseEntity!.address;
+      _descriptionController.text = widget.caseEntity!.description;
+      selectedStatus = ["Approved", "Pending", "Rejected"].contains(widget.caseEntity!.status)
+          ? widget.caseEntity!.status
+          : "Approved";
+    }
+  }
 
   @override
   void dispose() {
@@ -182,18 +200,34 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
                           );
                           return;
                         }
-                        context.read<AddCaseCubit>().addCase(
-                              AddCaseParams(
-                                name: _nameController.text,
-                                phone: _phoneController.text,
-                                address: _addressController.text,
-                                registDate: DateTime.now().toIso8601String(),
-                                status: selectedStatus,
-                                description: _descriptionController.text,
-                                categoryId: selectedCategoryId!,
-                                supervisorId: 1,
-                              ),
-                            );
+                        if (widget.caseEntity != null) {
+                          context.read<AddCaseCubit>().updateCase(
+                                widget.caseEntity!.id,
+                                AddCaseParams(
+                                  name: _nameController.text,
+                                  phone: _phoneController.text,
+                                  address: _addressController.text,
+                                  registDate: widget.caseEntity!.registDate.toIso8601String(),
+                                  status: selectedStatus,
+                                  description: _descriptionController.text,
+                                  categoryId: selectedCategoryId!,
+                                  supervisorId: 1,
+                                ),
+                              );
+                        } else {
+                          context.read<AddCaseCubit>().addCase(
+                                AddCaseParams(
+                                  name: _nameController.text,
+                                  phone: _phoneController.text,
+                                  address: _addressController.text,
+                                  registDate: DateTime.now().toIso8601String(),
+                                  status: selectedStatus,
+                                  description: _descriptionController.text,
+                                  categoryId: selectedCategoryId!,
+                                  supervisorId: 1,
+                                ),
+                              );
+                        }
                       },
                 child: state is AddCaseLoading
                     ? const SizedBox(
@@ -204,9 +238,9 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
                           strokeWidth: 2,
                         ),
                       )
-                    : const Text(
-                        "Save Case",
-                        style: TextStyle(color: Colors.white),
+                    : Text(
+                        widget.caseEntity != null ? "Update Case" : "Save Case",
+                        style: const TextStyle(color: Colors.white),
                       ),
               );
             },
