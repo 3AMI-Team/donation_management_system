@@ -13,10 +13,34 @@ class DistributionKPIsCards extends StatelessWidget {
       builder: (context, state) {
         if (state is DistributionStatsLoaded) {
           final kpis = [
-            (title: 'Total Distributed', value: '${state.kpis.totalDistributed.toStringAsFixed(0)} EGP', icon: Icons.attach_money_rounded),
-            (title: 'Cases Served', value: '${state.kpis.casesServed}', icon: Icons.people_outline),
-            (title: 'Avg Distribution', value: '${state.kpis.avgDistribution.toStringAsFixed(0)} EGP', icon: Icons.analytics_outlined),
-            (title: 'Remaining Balance', value: '${state.kpis.remainingBalance.toStringAsFixed(0)} EGP', icon: Icons.account_balance_wallet_outlined),
+            (
+              title: 'Total Distributed',
+              value: '${state.kpis.totalDistributed.toStringAsFixed(0)} EGP',
+              icon: Icons.attach_money_rounded,
+              logo: 'assets/icons/funds distributed.png',
+              color: const Color(0xFF10B981)
+            ),
+            (
+              title: 'Cases Served',
+              value: '${state.kpis.casesServed}',
+              icon: Icons.people_outline,
+              logo: 'assets/icons/active cases.png',
+              color: const Color(0xFFF59E0B)
+            ),
+            (
+              title: 'Avg Distribution',
+              value: '${state.kpis.avgDistribution.toStringAsFixed(0)} EGP',
+              icon: Icons.analytics_outlined,
+              logo: null,
+              color: const Color(0xFF3B82F6)
+            ),
+            (
+              title: 'Remaining Balance',
+              value: '${state.kpis.remainingBalance.toStringAsFixed(0)} EGP',
+              icon: Icons.account_balance_wallet_outlined,
+              logo: null,
+              color: const Color(0xFF8B5CF6)
+            ),
           ];
 
           return Row(
@@ -32,6 +56,8 @@ class DistributionKPIsCards extends StatelessWidget {
                       title: kpi.title,
                       value: kpi.value,
                       icon: kpi.icon,
+                      iconColor: kpi.color,
+                      logo: kpi.logo,
                       percentageChange: 0,
                     ),
                   ),
