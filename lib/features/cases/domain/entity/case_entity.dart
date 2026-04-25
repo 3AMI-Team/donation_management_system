@@ -2,34 +2,37 @@ import 'package:equatable/equatable.dart';
 
 class CaseEntity extends Equatable {
   final int id;
-  final double amount;
-  final String description;
+  final String name;
+  final String phone;
+  final String address;
+  final DateTime registDate;
   final String status;
-  final DateTime date;
-  final int supervisorId;
-  final int donorId;
-  final int categoryId;
+  final String description;
+  final String categoryName;
+  final String supervisorName;
 
   const CaseEntity({
     required this.id,
-    required this.amount,
-    required this.description,
+    required this.name,
+    required this.phone,
+    required this.address,
+    required this.registDate,
     required this.status,
-    required this.date,
-    required this.supervisorId,
-    required this.donorId,
-    required this.categoryId,
+    required this.description,
+    required this.categoryName,
+    required this.supervisorName,
   });
 
   @override
   List<Object?> get props => [
         id,
-        amount,
-        description,
+        name,
+        phone,
+        address,
+        registDate,
         status,
-        date,
-        supervisorId,
-        donorId,
-        categoryId,
+        description,
+        categoryName,
+        supervisorName,
       ];
 }

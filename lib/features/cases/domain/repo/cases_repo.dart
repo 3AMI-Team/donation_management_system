@@ -7,4 +7,5 @@ abstract class CasesRepo {
   Future<Either<Failure, CasesResponseEntity>> getCases();
   Future<Either<Failure, CaseKpisEntity>> getCaseKpis();
   Future<Either<Failure, Unit>> addCase(AddCaseParams params);
+  Future<Either<Failure, Unit>> updateCase(int id, AddCaseParams params);
 }

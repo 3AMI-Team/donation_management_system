@@ -64,4 +64,20 @@ class CasesRepoImpl implements CasesRepo {
       return const Left(NetworkFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, Unit>> updateCase(int id, AddCaseParams params) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await remoteDataSource.updateCase(id, params);
+        return const Right(unit);
+      } on AppException catch (e) {
+        return Left(ServerFailure(message: e.message, code: e.statusCode));
+      } catch (e) {
+        return const Left(UnknownFailure());
+      }
+    } else {
+      return const Left(NetworkFailure());
+    }
+  }
 }

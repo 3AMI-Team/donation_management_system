@@ -165,7 +165,7 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
     List<dynamic> donations,
   ) {
     return categories.map((cat) {
-      final caseCount = cases.where((c) => c.categoryId == cat.id).length;
+      final caseCount = cases.where((c) => c.categoryName == cat.type).length;
       final donationTotal = donations
           .where((d) => d.categoryName == cat.type)
           .fold<double>(0, (sum, d) => sum + d.amount);

@@ -11,8 +11,8 @@ class CasesTable extends StatelessWidget {
 
   final List<TableHeader> headerCells = const [
     TableHeader(text: 'ID', flex: 1),
-    TableHeader(text: 'Description', flex: 3),
-    TableHeader(text: 'Amount', flex: 1),
+    TableHeader(text: 'Name', flex: 3),
+    TableHeader(text: 'Category', flex: 1),
     TableHeader(text: 'Date', flex: 1),
     TableHeader(text: 'Status', flex: 1),
     TableHeader(text: 'Actions', flex: 0),
