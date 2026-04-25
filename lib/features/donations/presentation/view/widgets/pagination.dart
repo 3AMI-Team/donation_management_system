@@ -19,9 +19,9 @@ class Pagination extends StatelessWidget {
     this.onNextPressed,
   });
 
-  int get totalPages => (totalItems / itemsPerPage).ceil();
-  int get startItem => (currentPage - 1) * itemsPerPage + 1;
-  int get endItem => (currentPage * itemsPerPage).clamp(1, totalItems);
+  int get totalPages => totalItems == 0 ? 1 : (totalItems / itemsPerPage).ceil();
+  int get startItem => totalItems == 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+  int get endItem => totalItems == 0 ? 0 : (currentPage * itemsPerPage).clamp(1, totalItems);
 
   @override
   Widget build(BuildContext context) {

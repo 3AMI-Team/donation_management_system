@@ -69,7 +69,11 @@ import 'package:donation_management_system/features/categories/data/data_source/
 import 'package:donation_management_system/features/categories/data/repo/categories_repo_impl.dart';
 import 'package:donation_management_system/features/categories/domain/repo/categories_repo.dart';
 import 'package:donation_management_system/features/categories/domain/use_case/get_categories_use_case.dart';
+import 'package:donation_management_system/features/categories/domain/use_case/add_category_use_case.dart';
+import 'package:donation_management_system/features/categories/domain/use_case/update_category_use_case.dart';
+import 'package:donation_management_system/features/categories/domain/use_case/delete_category_use_case.dart';
 import 'package:donation_management_system/features/categories/presentation/view_model/categories_cubit/categories_cubit.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/add_category_cubit/add_category_cubit.dart';
 // Employees
 import 'package:donation_management_system/features/employees/data/data_source/employees_remote_data_source.dart';
 import 'package:donation_management_system/features/employees/data/repo/employees_repo_impl.dart';
@@ -253,10 +257,22 @@ void _initDonations() {
 
 void _initCategories() {
   // Cubit
-  sl.registerFactory(() => CategoriesCubit(getCategoriesUseCase: sl()));
+  sl.registerFactory(() => CategoriesCubit(
+        getCategoriesUseCase: sl(),
+        getCasesUseCase: sl(),
+        getDonationsUseCase: sl(),
+        deleteCategoryUseCase: sl(),
+      ));
+  sl.registerFactory(() => AddCategoryCubit(
+        addCategoryUseCase: sl(),
+        updateCategoryUseCase: sl(),
+      ));
 
   // Use Case
   sl.registerLazySingleton(() => GetCategoriesUseCase(repository: sl()));
+  sl.registerLazySingleton(() => AddCategoryUseCase(repository: sl()));
+  sl.registerLazySingleton(() => UpdateCategoryUseCase(repository: sl()));
+  sl.registerLazySingleton(() => DeleteCategoryUseCase(repository: sl()));
 
   // Repository
   sl.registerLazySingleton<CategoriesRepo>(

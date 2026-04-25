@@ -14,7 +14,6 @@ class EmployeesViewBody extends StatefulWidget {
 
 class _EmployeesViewBodyState extends State<EmployeesViewBody> {
   final TextEditingController _searchController = TextEditingController();
-  int _currentPage = 1;
   static const int _itemsPerPage = 10;
 
   @override
@@ -56,9 +55,6 @@ class _EmployeesViewBodyState extends State<EmployeesViewBody> {
                 },
                 searchController: _searchController,
                 onSearchChanged: (query) {
-                  setState(() {
-                    _currentPage = 1; 
-                  });
                   context.read<EmployeesCubit>().filterEmployees(query: query);
                 },
                 hintText: 'Search employees...',

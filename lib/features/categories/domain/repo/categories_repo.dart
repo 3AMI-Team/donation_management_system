@@ -4,4 +4,7 @@ import 'package:donation_management_system/features/categories/domain/entity/cat
 
 abstract class CategoriesRepo {
   Future<Either<Failure, List<CategoryEntity>>> getCategories();
+  Future<Either<Failure, Unit>> addCategory(Map<String, dynamic> categoryData);
+  Future<Either<Failure, Unit>> updateCategory(int id, Map<String, dynamic> categoryData);
+  Future<Either<Failure, Unit>> deleteCategory(int id);
 }

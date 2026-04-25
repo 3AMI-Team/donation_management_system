@@ -30,4 +30,52 @@ class CategoriesRepoImpl implements CategoriesRepo {
       return const Left(NetworkFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, Unit>> addCategory(Map<String, dynamic> categoryData) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await remoteDataSource.addCategory(categoryData);
+        return const Right(unit);
+      } on AppException catch (e) {
+        return Left(ServerFailure(message: e.message, code: e.statusCode));
+      } catch (e) {
+        return const Left(UnknownFailure());
+      }
+    } else {
+      return const Left(NetworkFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> updateCategory(int id, Map<String, dynamic> categoryData) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await remoteDataSource.updateCategory(id, categoryData);
+        return const Right(unit);
+      } on AppException catch (e) {
+        return Left(ServerFailure(message: e.message, code: e.statusCode));
+      } catch (e) {
+        return const Left(UnknownFailure());
+      }
+    } else {
+      return const Left(NetworkFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> deleteCategory(int id) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await remoteDataSource.deleteCategory(id);
+        return const Right(unit);
+      } on AppException catch (e) {
+        return Left(ServerFailure(message: e.message, code: e.statusCode));
+      } catch (e) {
+        return const Left(UnknownFailure());
+      }
+    } else {
+      return const Left(NetworkFailure());
+    }
+  }
 }

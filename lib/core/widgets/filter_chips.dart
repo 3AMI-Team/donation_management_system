@@ -4,9 +4,9 @@ import 'package:gap/gap.dart';
 import 'package:donation_management_system/core/theme/colors.dart';
 
 class FilterChips extends StatelessWidget {
-  final List<String> filters;
-  final String selectedFilter;
-  final ValueChanged<String> onFilterSelected;
+  final List<String>? filters;
+  final String? selectedFilter;
+  final ValueChanged<String>? onFilterSelected;
   final TextEditingController? searchController;
   final ValueChanged<String>? onSearchChanged;
   final VoidCallback? onSortPressed;
@@ -14,9 +14,9 @@ class FilterChips extends StatelessWidget {
 
   const FilterChips({
     super.key,
-    required this.filters,
-    required this.selectedFilter,
-    required this.onFilterSelected,
+    this.filters,
+    this.selectedFilter,
+    this.onFilterSelected,
     this.searchController,
     this.onSearchChanged,
     this.onSortPressed,
@@ -27,44 +27,43 @@ class FilterChips extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            child: Row(
-              children: filters.map((filter) {
-                final bool isSelected = filter == selectedFilter;
-                return Padding(
-                  padding: EdgeInsets.only(right: 8.w),
-                  child: FilterChip(
-                    label: Text(
-                      filter,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                        color:
-                            isSelected ? Colors.white : AppColors.textSecondary,
+        if (filters != null && filters!.isNotEmpty)
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: Row(
+                children: filters!.map((filter) {
+                  final bool isSelected = filter == selectedFilter;
+                  return Padding(
+                    padding: EdgeInsets.only(right: 8.w),
+                    child: FilterChip(
+                      label: Text(
+                        filter,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: isSelected ? Colors.white : AppColors.textSecondary,
+                        ),
                       ),
-                    ),
-                    selected: isSelected,
-                    onSelected: (_) => onFilterSelected(filter),
-                    backgroundColor: AppColors.surface,
-                    selectedColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.r),
-                      side: BorderSide(
-                        color:
-                            isSelected ? AppColors.primary : AppColors.border,
+                      selected: isSelected,
+                      onSelected: (_) => onFilterSelected?.call(filter),
+                      backgroundColor: AppColors.surface,
+                      selectedColor: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.r),
+                        side: BorderSide(
+                          color: isSelected ? AppColors.primary : AppColors.border,
+                        ),
                       ),
+                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                     ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                  ),
-                );
-              }).toList(),
+                  );
+                }).toList(),
+              ),
             ),
           ),
-        ),
+        if (filters == null || filters!.isEmpty) const Spacer(),
         Gap(16.w),
         SizedBox(
           width: 280.w,

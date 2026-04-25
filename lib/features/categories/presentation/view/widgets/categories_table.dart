@@ -1,6 +1,9 @@
 import 'package:donation_management_system/core/widgets/widgets.dart';
-import 'package:donation_management_system/features/categories/data/models/category_table_model.dart';
-import 'package:donation_management_system/features/donors/presentation/view/widgets/donor_data_row.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/categories_cubit/categories_cubit.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/categories_cubit/category_ui_model.dart';
+import 'package:donation_management_system/features/categories/presentation/view/widgets/add_new_category.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/add_category_cubit/add_category_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CategoriesTable extends StatelessWidget {
   const CategoriesTable({super.key});
@@ -15,52 +18,54 @@ class CategoriesTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomTable(
-      headerCells: _headers,
-      dataRow: const [
-        CategoryTableModel(
-          name: 'Medical Aid',
-          description:
-              'Critical support for life-saving surgeries, medication supplies, and emergency clinical procedures globally.',
-          totalCases: '1,242',
-          totalDonations: '\$450,800',
-        ),
-        CategoryTableModel(
-          name: 'Education',
-          description:
-              'Funding for primary schools, digital literacy programs, and higher education scholarships for low-income students.',
-          totalCases: '894',
-          totalDonations: '\$212,150',
-        ),
-        CategoryTableModel(
-          name: 'Food Security',
-          description:
-              'Sustainable community gardens, food banks, and monthly nutrition ration programs for vulnerable communities.',
-          totalCases: '3,412',
-          totalDonations: '\$185,400',
-        ),
-        CategoryTableModel(
-          name: 'Housing',
-          description:
-              'Urban development projects and emergency shelter construction for families displaced by disasters or hardship.',
-          totalCases: '456',
-          totalDonations: '\$1,024,900',
-        ),
-        CategoryTableModel(
-          name: 'Emergency Relief',
-          description:
-              'Rapid-response kits, temporary housing, and logistics for communities affected by natural disasters.',
-          totalCases: '612',
-          totalDonations: '\$328,500',
-        ),
-      ],
-      itemBuilder: (item) => CategoryDataRow(category: item),
+    return BlocBuilder<CategoriesCubit, CategoriesState>(
+      builder: (context, state) {
+        if (state is CategoriesLoading) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(32.0),
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        if (state is CategoriesError) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: Text(
+                state.message,
+                style: const TextStyle(color: Colors.red),
+              ),
+            ),
+          );
+        }
+
+        if (state is CategoriesLoaded) {
+          if (state.masterCategories.isEmpty) {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.all(32.0),
+                child: Text('No categories found.'),
+              ),
+            );
+          }
+
+          return CustomTable(
+            headerCells: _headers,
+            dataRow: state.currentPageCategories,
+            itemBuilder: (item) => CategoryDataRow(category: item),
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 }
 
 class CategoryDataRow extends StatelessWidget {
-  final CategoryTableModel category;
+  final CategoryUIModel category;
 
   const CategoryDataRow({super.key, required this.category});
 
@@ -85,7 +90,7 @@ class CategoryDataRow extends StatelessWidget {
                   radius: 18.r,
                   backgroundColor: AppColors.primary.withOpacity(0.1),
                   child: Text(
-                    category.name.substring(0, 1).toUpperCase(),
+                    category.category.type.substring(0, 1).toUpperCase(),
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
@@ -96,7 +101,7 @@ class CategoryDataRow extends StatelessWidget {
                 Gap(10.w),
                 Expanded(
                   child: Text(
-                    category.name,
+                    category.category.type,
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
@@ -111,7 +116,7 @@ class CategoryDataRow extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              category.description,
+              category.category.description,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -125,7 +130,7 @@ class CategoryDataRow extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Text(
-              category.totalCases,
+              category.totalCases.toString(),
               style: TextStyle(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
@@ -135,7 +140,7 @@ class CategoryDataRow extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Text(
-              category.totalDonations,
+              "${category.totalDonations.toStringAsFixed(0)} EGP",
               style: TextStyle(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
@@ -143,7 +148,78 @@ class CategoryDataRow extends StatelessWidget {
               ),
             ),
           ),
-          const ActionsButtons(),
+          CategoryActions(category: category),
+        ],
+      ),
+    );
+  }
+}
+
+class CategoryActions extends StatelessWidget {
+  final CategoryUIModel category;
+  const CategoryActions({super.key, required this.category});
+
+  @override
+  Widget build(BuildContext context) {
+    final categoriesCubit = context.read<CategoriesCubit>();
+    return SizedBox(
+      width: 40.w,
+      child: PopupMenuButton<String>(
+        icon: Icon(
+          Icons.more_vert,
+          size: 20.sp,
+          color: AppColors.textSecondary,
+        ),
+        onSelected: (value) {
+          if (value == 'edit') {
+            final addCategoryCubit = context.read<AddCategoryCubit>();
+            showDialog(
+              context: context,
+              builder: (dialogContext) => MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(value: categoriesCubit),
+                  BlocProvider.value(value: addCategoryCubit),
+                ],
+                child: AddCategoryDialog(category: category.category),
+              ),
+            );
+          } else if (value == 'delete') {
+            showDialog(
+              context: context,
+              builder: (dialogContext) => BlocProvider.value(
+                value: categoriesCubit,
+                child: DeleteConfirmationDialog(
+                  title: 'Delete Category',
+                  content: 'Are you sure you want to delete "${category.category.type}"? This action cannot be undone.',
+                  onDeletePressed: () {
+                    categoriesCubit.deleteCategory(category.category.id);
+                  },
+                ),
+              ),
+            );
+          }
+        },
+        itemBuilder: (context) => [
+          const PopupMenuItem(
+            value: 'edit',
+            child: Row(
+              children: [
+                Icon(Icons.edit_outlined, size: 18),
+                Gap(8),
+                Text('Edit'),
+              ],
+            ),
+          ),
+          const PopupMenuItem(
+            value: 'delete',
+            child: Row(
+              children: [
+                Icon(Icons.delete_outline, size: 18, color: Colors.red),
+                Gap(8),
+                Text('Delete', style: TextStyle(color: Colors.red)),
+              ],
+            ),
+          ),
         ],
       ),
     );

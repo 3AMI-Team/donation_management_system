@@ -1,6 +1,8 @@
 import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/categories/presentation/view/widgets/categories_table.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/categories_cubit/categories_cubit.dart';
 import 'package:donation_management_system/features/donations/presentation/view/widgets/pagination.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CategoriesViewBody extends StatefulWidget {
   const CategoriesViewBody({super.key});
@@ -10,11 +12,13 @@ class CategoriesViewBody extends StatefulWidget {
 }
 
 class _CategoriesViewBodyState extends State<CategoriesViewBody> {
-  String _selectedFilter = 'All';
   final TextEditingController _searchController = TextEditingController();
-  int _currentPage = 1;
 
-  final List<String> _filters = ['All', 'Active', 'Draft', 'Archived'];
+  @override
+  void initState() {
+    super.initState();
+    context.read<CategoriesCubit>().getCategories();
+  }
 
   @override
   void dispose() {
@@ -24,52 +28,53 @@ class _CategoriesViewBodyState extends State<CategoriesViewBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          flex: 3,
-          child: Column(
-            children: [
-              FilterChips(
-                hintText: 'Search categories...',
-                filters: _filters,
-                selectedFilter: _selectedFilter,
-                onFilterSelected: (filter) {
-                  setState(() {
-                    _selectedFilter = filter;
-                  });
-                },
-                searchController: _searchController,
-                onSearchChanged: (_) {},
-                onSortPressed: () {},
+    return BlocBuilder<CategoriesCubit, CategoriesState>(
+      builder: (context, state) {
+        int totalItems = 0;
+        int totalPages = 1;
+        int currentPage = 1;
+
+        if (state is CategoriesLoaded) {
+          totalItems = state.totalCount;
+          totalPages = state.totalPages;
+          currentPage = state.currentPage;
+        }
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 3,
+              child: Column(
+                children: [
+                  FilterChips(
+                    hintText: 'Search categories...',
+                    searchController: _searchController,
+                    onSearchChanged: (val) {
+                      context.read<CategoriesCubit>().filterCategories(query: val);
+                    },
+                    onSortPressed: () {},
+                  ),
+                  Gap(16.h),
+                  const CategoriesTable(),
+                  Gap(16.h),
+                  Pagination(
+                    currentPage: currentPage,
+                    totalItems: totalItems,
+                    itemsPerPage: 5,
+                    onPreviousPressed: currentPage > 1
+                        ? () => context.read<CategoriesCubit>().changePage(currentPage - 1)
+                        : null,
+                    onNextPressed: currentPage < totalPages
+                        ? () => context.read<CategoriesCubit>().changePage(currentPage + 1)
+                        : null,
+                  ),
+                ],
               ),
-              Gap(16.h),
-              const CategoriesTable(),
-              Gap(16.h),
-              Pagination(
-                currentPage: _currentPage,
-                totalItems: 24,
-                itemsPerPage: 5,
-                onPreviousPressed: () {
-                  if (_currentPage > 1) {
-                    setState(() {
-                      _currentPage--;
-                    });
-                  }
-                },
-                onNextPressed: () {
-                  if (_currentPage < 5) {
-                    setState(() {
-                      _currentPage++;
-                    });
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 }

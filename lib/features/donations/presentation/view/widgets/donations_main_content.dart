@@ -77,7 +77,7 @@ class _DonationsMainContentState extends State<DonationsMainContent> {
       builder: (context, categoriesState) {
         List<String> categories = ['All'];
         if (categoriesState is CategoriesLoaded) {
-          categories.addAll(categoriesState.categories.map((e) => e.type));
+          categories.addAll(categoriesState.masterCategories.map((e) => e.category.type));
         }
 
         return common.FilterChips(

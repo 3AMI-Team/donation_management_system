@@ -4,6 +4,9 @@ import 'package:donation_management_system/features/categories/data/model/catego
 
 abstract class CategoriesRemoteDataSource {
   Future<List<CategoryModel>> getCategories();
+  Future<void> addCategory(Map<String, dynamic> categoryData);
+  Future<void> updateCategory(int id, Map<String, dynamic> categoryData);
+  Future<void> deleteCategory(int id);
 }
 
 class CategoriesRemoteDataSourceImpl implements CategoriesRemoteDataSource {
@@ -17,5 +20,20 @@ class CategoriesRemoteDataSourceImpl implements CategoriesRemoteDataSource {
     return (response as List)
         .map((category) => CategoryModel.fromJson(category))
         .toList();
+  }
+
+  @override
+  Future<void> addCategory(Map<String, dynamic> categoryData) async {
+    await api.post(ServerStrings.categories, body: categoryData);
+  }
+
+  @override
+  Future<void> updateCategory(int id, Map<String, dynamic> categoryData) async {
+    await api.put('${ServerStrings.categories}/$id', body: categoryData);
+  }
+
+  @override
+  Future<void> deleteCategory(int id) async {
+    await api.delete('${ServerStrings.categories}/$id');
   }
 }

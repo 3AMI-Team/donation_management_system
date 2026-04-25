@@ -289,10 +289,10 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
                     value: selectedCategoryId,
                     hint: const Text("Select Category"),
                     isExpanded: true,
-                    items: state.categories.map((cat) {
+                    items: state.masterCategories.map((cat) {
                       return DropdownMenuItem<int>(
-                        value: cat.id,
-                        child: Text(cat.type),
+                        value: cat.category.id,
+                        child: Text(cat.category.type),
                       );
                     }).toList(),
                     onChanged: (val) => setState(() => selectedCategoryId = val!),
