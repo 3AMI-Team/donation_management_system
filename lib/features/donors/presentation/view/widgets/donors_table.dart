@@ -1,9 +1,7 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:donation_management_system/core/widgets/custom_table.dart';
-import 'package:donation_management_system/core/widgets/table_header.dart';
+import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/donors/domain/entity/donor_entity.dart';
 import 'package:donation_management_system/features/donors/presentation/view/widgets/donor_data_row.dart';
-import 'package:flutter/material.dart';
 
 class DonorsTable extends StatelessWidget {
   final List<DonorEntity> donors;
@@ -21,9 +19,14 @@ class DonorsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomTable(
+    return CustomTable<DonorEntity>(
       headerCells: headerCells,
       dataRow: donors,
+      sortKeyExtractors: {
+        0: (donor) => donor.name,
+        1: (donor) => donor.phone,
+        3: (donor) => donor.registerDate,
+      },
       itemBuilder: (item) {
         final index = donors.indexOf(item);
         return FadeInUp(

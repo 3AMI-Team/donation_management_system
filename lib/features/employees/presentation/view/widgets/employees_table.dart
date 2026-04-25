@@ -2,7 +2,6 @@ import 'package:animate_do/animate_do.dart';
 import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/employees/domain/entity/employee_entity.dart';
 import 'package:donation_management_system/features/employees/presentation/view/widgets/employee_data_row.dart';
-import 'package:flutter/material.dart';
 
 class EmployeesTable extends StatelessWidget {
   final List<EmployeeEntity> employees;
@@ -21,9 +20,14 @@ class EmployeesTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomTable(
+    return CustomTable<EmployeeEntity>(
       headerCells: _headers,
       dataRow: employees,
+      sortKeyExtractors: {
+        0: (emp) => emp.name,
+        2: (emp) => emp.username,
+        3: (emp) => emp.role,
+      },
       itemBuilder: (item) {
         final index = employees.indexOf(item);
         return FadeInUp(

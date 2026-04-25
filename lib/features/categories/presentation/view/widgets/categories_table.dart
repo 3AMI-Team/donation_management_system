@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:donation_management_system/core/widgets/widgets.dart';
+import 'package:donation_management_system/features/categories/domain/entity/category_entity.dart';
 import 'package:donation_management_system/features/categories/presentation/view_model/categories_bloc/categories_bloc.dart';
 import 'package:donation_management_system/features/categories/presentation/view_model/categories_bloc/categories_state.dart';
 import 'package:donation_management_system/features/categories/presentation/view/widgets/category_data_row.dart';
@@ -53,9 +54,14 @@ class CategoriesTable extends StatelessWidget {
           }
 
           final categories = state.currentPageCategories;
-          return CustomTable(
+          return CustomTable<CategoryEntity>(
             headerCells: _headers,
             dataRow: categories,
+            sortKeyExtractors: {
+              0: (cat) => cat.type,
+              2: (cat) => cat.totalCases,
+              3: (cat) => cat.totalDonations,
+            },
             itemBuilder: (item) {
               final i = categories.indexOf(item);
               return FadeInUp(

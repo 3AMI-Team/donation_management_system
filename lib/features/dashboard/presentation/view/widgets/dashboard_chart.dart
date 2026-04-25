@@ -2,7 +2,6 @@ import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/dashboard/domain/entity/donation_trends_entity.dart';
 import 'package:donation_management_system/features/dashboard/presentation/view/widgets/base_line_chart.dart';
 import 'package:donation_management_system/features/dashboard/presentation/view/widgets/chart_header.dart';
-import 'package:flutter/material.dart';
 
 class DashboardChart extends StatelessWidget {
   final DonationTrends trends;

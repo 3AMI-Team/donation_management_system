@@ -1,87 +1,64 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:donation_management_system/core/theme/colors.dart';
-import 'package:donation_management_system/core/theme/typography.dart';
+import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/donations/domain/entity/donation_entity.dart';
 import 'package:donation_management_system/features/donations/presentation/view/widgets/donation_table_row.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DonationsTable extends StatelessWidget {
   final List<Donation> donations;
   const DonationsTable({super.key, required this.donations});
 
+  static List<TableHeader> get _headers => [
+        TableHeader(text: 'Donor', width: 200.w),
+        TableHeader(text: 'Amount', width: 140.w),
+        TableHeader(text: 'Category', width: 140.w),
+        TableHeader(text: 'Date', width: 140.w),
+        TableHeader(text: 'Supervisor', width: 150.w),
+        const TableHeader(text: 'Status', textAlign: TextAlign.center),
+      ];
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Column(
-        children: [
-          const _DonationsTableHeader(),
-          if (donations.isEmpty)
-            _EmptyState()
-          else
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: donations.length,
-              itemBuilder: (_, i) => FadeInUp(
-                delay: Duration(milliseconds: i * 50),
-                duration: const Duration(milliseconds: 300),
-                child: DonationTableRow(donation: donations[i]),
-              ),
-            ),
-        ],
-      ),
+    if (donations.isEmpty) {
+      return Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: const _EmptyState(),
+      );
+    }
+
+    return CustomTable<Donation>(
+      headerCells: _headers,
+      dataRow: donations,
+      sortKeyExtractors: {
+        0: (d) => d.donorName,
+        1: (d) => d.amount,
+        2: (d) => d.categoryName,
+        3: (d) => d.date,
+      },
+      itemBuilder: (item) {
+        final i = donations.indexOf(item);
+        return FadeInUp(
+          delay: Duration(milliseconds: i * 50),
+          duration: const Duration(milliseconds: 300),
+          child: DonationTableRow(donation: item),
+        );
+      },
     );
   }
 }
 
 class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(32.r),
-      child: const Text('No donations found matching your criteria'),
-    );
-  }
-}
-
-class _DonationsTableHeader extends StatelessWidget {
-  const _DonationsTableHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 60.h,
-      color: AppColors.divider.withOpacity(0.3),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        child: Row(
-          children: [
-            _headerCell('Donor', width: 200.w),
-            _headerCell('Amount', width: 140.w),
-            _headerCell('Category', width: 140.w),
-            _headerCell('Date', width: 140.w),
-            _headerCell('Supervisor', width: 150.w),
-            Expanded(child: _headerCell('Status', textAlign: TextAlign.center)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _headerCell(String text, {double? width, TextAlign? textAlign}) {
-    return SizedBox(
-      width: width,
-      child: Text(text,
-          textAlign: textAlign,
-          style: AppTypography.bodyMedium.copyWith(fontWeight: FontWeight.w600, color: AppColors.textSecondary)),
+      child: const Center(child: Text('No donations found matching your criteria')),
     );
   }
 }

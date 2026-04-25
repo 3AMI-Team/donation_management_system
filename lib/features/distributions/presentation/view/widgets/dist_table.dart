@@ -19,9 +19,14 @@ class DistributionTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomTable(
+    return CustomTable<DistributionEntity>(
       headerCells: headerCells,
       dataRow: distributions,
+      sortKeyExtractors: {
+        0: (d) => d.caseName,
+        2: (d) => d.amount,
+        3: (d) => d.distributionDate,
+      },
       itemBuilder: (item) {
         final index = distributions.indexOf(item);
         return FadeInUp(

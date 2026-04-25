@@ -1,7 +1,6 @@
 import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/donors/domain/entity/donor_entity.dart';
 import 'package:donation_management_system/features/donors/presentation/view/widgets/donor_actions_buttons.dart';
-import 'package:flutter/material.dart';
 
 class DonorDataRow extends StatelessWidget {
   final DonorEntity donorEntity;

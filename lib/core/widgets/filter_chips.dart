@@ -43,7 +43,9 @@ class FilterChips extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
-                          color: isSelected ? Colors.white : AppColors.textSecondary,
+                          color: isSelected
+                              ? Colors.white
+                              : AppColors.textSecondary,
                         ),
                       ),
                       selected: isSelected,
@@ -53,10 +55,15 @@ class FilterChips extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16.r),
                         side: BorderSide(
-                          color: isSelected ? AppColors.primary : AppColors.border,
+                          color: isSelected
+                              ? AppColors.primary
+                              : AppColors.border,
                         ),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 8.h,
+                      ),
                     ),
                   );
                 }).toList(),
@@ -102,48 +109,6 @@ class FilterChips extends StatelessWidget {
                 borderSide: const BorderSide(
                   color: AppColors.primary,
                   width: 2,
-                ),
-              ),
-            ),
-          ),
-        ),
-        Gap(12.w),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onSortPressed,
-              borderRadius: BorderRadius.circular(12.r),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.sort,
-                      size: 18.sp,
-                      color: AppColors.textSecondary,
-                    ),
-                    Gap(6.w),
-                    Text(
-                      'Sort',
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    Gap(4.w),
-                    Icon(
-                      Icons.arrow_drop_down,
-                      size: 18.sp,
-                      color: AppColors.textSecondary,
-                    ),
-                  ],
                 ),
               ),
             ),

@@ -9,7 +9,6 @@ import 'package:donation_management_system/features/distributions/presentation/v
 import 'package:donation_management_system/features/distributions/presentation/view_model/distributions_cubit/distributions_cubit.dart';
 import 'package:donation_management_system/features/distributions/presentation/view_model/distributions_cubit/distributions_state.dart';
 import 'package:donation_management_system/features/donations/presentation/view/widgets/pagination.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DistributionView extends StatelessWidget {

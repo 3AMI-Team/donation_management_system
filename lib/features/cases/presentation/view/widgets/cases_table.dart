@@ -1,9 +1,7 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:donation_management_system/core/widgets/custom_table.dart';
-import 'package:donation_management_system/core/widgets/table_header.dart';
+import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/cases/domain/entity/case_entity.dart';
 import 'package:donation_management_system/features/cases/presentation/view/widgets/case_data_row.dart';
-import 'package:flutter/material.dart';
 
 class CasesTable extends StatelessWidget {
   final List<CaseEntity> cases;
@@ -21,9 +19,15 @@ class CasesTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomTable(
+    return CustomTable<CaseEntity>(
       headerCells: headerCells,
       dataRow: cases,
+      sortKeyExtractors: {
+        0: (c) => c.id,
+        1: (c) => c.name,
+        2: (c) => c.categoryName,
+        3: (c) => c.registDate,
+      },
       itemBuilder: (item) {
         final index = cases.indexOf(item);
         return FadeInUp(
