@@ -1,5 +1,6 @@
 import 'package:donation_management_system/core/utils/extensions.dart';
 import 'package:donation_management_system/core/widgets/kpi_card.dart';
+import 'package:donation_management_system/core/widgets/shimmer_loading.dart';
 import 'package:donation_management_system/features/donors/presentation/view_model/donors_cubit/donor_stats_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +15,7 @@ class DonorsKPIsCards extends StatelessWidget {
     return BlocBuilder<DonorStatsCubit, DonorStatsState>(
       builder: (context, state) {
         if (state is DonorStatsLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const ShimmerStatsRow(count: 4, cardHeight: 110);
         }
         if (state is DonorStatsError) {
           return Center(child: Text(state.message));

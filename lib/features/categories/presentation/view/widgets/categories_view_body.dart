@@ -27,7 +27,7 @@ class _CategoriesViewBodyState extends State<CategoriesViewBody> {
     return BlocBuilder<CategoriesBloc, CategoriesState>(
       builder: (context, state) {
         if (state is CategoriesLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const ShimmerTable(rowCount: 6);
         }
 
         if (state is CategoriesError) {

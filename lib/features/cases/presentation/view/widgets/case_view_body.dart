@@ -26,7 +26,7 @@ class _CasesViewBodyState extends State<CasesViewBody> {
     return BlocBuilder<CasesCubit, CasesState>(
       builder: (context, state) {
         if (state is CasesLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const ShimmerTable(rowCount: 8);
         } else if (state is CasesError) {
           return Center(child: Text(state.message));
         } else if (state is CasesLoaded) {

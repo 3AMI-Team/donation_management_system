@@ -27,7 +27,7 @@ class _DonorsViewBodyState extends State<DonorsViewBody> {
     return BlocBuilder<DonorsCubit, DonorsState>(
       builder: (context, state) {
         if (state is DonorsLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const ShimmerTable(rowCount: 8);
         } else if (state is DonorsError) {
           return Center(child: Text(state.message));
         } else if (state is DonorsLoaded) {

@@ -1,8 +1,7 @@
-import 'package:donation_management_system/core/widgets/kpi_card.dart';
 import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/employees/presentation/view_model/employee_stats_cubit/employee_stats_cubit.dart';
 import 'package:donation_management_system/features/employees/presentation/view_model/employee_stats_cubit/employee_stats_state.dart';
-import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EmployeesKPIsCards extends StatelessWidget {
@@ -13,7 +12,7 @@ class EmployeesKPIsCards extends StatelessWidget {
     return BlocBuilder<EmployeeStatsCubit, EmployeeStatsState>(
       builder: (context, state) {
         if (state is EmployeeStatsLoading || state is EmployeeStatsInitial) {
-          return const Center(child: CircularProgressIndicator());
+          return const ShimmerStatsRow(count: 4, cardHeight: 110);
         }
 
         if (state is EmployeeStatsError) {

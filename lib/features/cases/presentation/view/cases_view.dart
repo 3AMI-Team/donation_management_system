@@ -1,5 +1,6 @@
 import 'package:donation_management_system/core/di/injection_container.dart';
 import 'package:donation_management_system/core/widgets/kpi_card.dart';
+import 'package:donation_management_system/core/widgets/shimmer_loading.dart';
 import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/cases/presentation/view/widgets/add_new_case.dart';
 import 'package:donation_management_system/features/cases/presentation/view/widgets/case_view_body.dart';
@@ -67,7 +68,7 @@ class CasesKPIsCards extends StatelessWidget {
     return BlocBuilder<CaseStatsCubit, CaseStatsState>(
       builder: (context, state) {
         if (state is CaseStatsLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const ShimmerStatsRow(count: 4, cardHeight: 110);
         }
         if (state is CaseStatsError) {
           return Center(child: Text(state.message));

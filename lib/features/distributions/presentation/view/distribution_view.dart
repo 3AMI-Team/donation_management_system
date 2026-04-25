@@ -73,7 +73,7 @@ class _DistribtionViewBodyState extends State<DistribtionViewBody> {
     return BlocBuilder<DistributionsCubit, DistributionsState>(
       builder: (context, state) {
         if (state is DistributionsLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const ShimmerTable(rowCount: 8);
         }
 
         if (state is DistributionsError) {

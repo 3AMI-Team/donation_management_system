@@ -1,6 +1,5 @@
 import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/cases/domain/entity/case_entity.dart';
-import 'package:donation_management_system/features/donors/presentation/view/widgets/donor_data_row.dart';
 import 'package:donation_management_system/features/cases/presentation/view/widgets/add_new_case.dart';
 import 'package:donation_management_system/features/cases/presentation/view_model/add_case_cubit/add_case_cubit.dart';
 import 'package:donation_management_system/features/cases/presentation/view_model/cases_cubit/cases_cubit.dart';

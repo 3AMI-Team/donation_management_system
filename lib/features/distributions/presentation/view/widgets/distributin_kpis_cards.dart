@@ -1,4 +1,3 @@
-import 'package:donation_management_system/core/widgets/kpi_card.dart';
 import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/distributions/presentation/view_model/distribution_stats_cubit/distribution_stats_cubit.dart';
 import 'package:donation_management_system/features/distributions/presentation/view_model/distribution_stats_cubit/distribution_stats_state.dart';
@@ -59,7 +58,7 @@ class DistributionKPIsCards extends StatelessWidget {
           return Center(child: Text(state.message));
         }
 
-        return const Center(child: CircularProgressIndicator());
+        return const ShimmerStatsRow(count: 4, cardHeight: 110);
       },
     );
   }

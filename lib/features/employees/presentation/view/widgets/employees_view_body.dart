@@ -33,7 +33,7 @@ class _EmployeesViewBodyState extends State<EmployeesViewBody> {
     return BlocBuilder<EmployeesCubit, EmployeesState>(
       builder: (context, state) {
         if (state is EmployeesLoading || state is EmployeesInitial) {
-          return const Center(child: CircularProgressIndicator());
+          return const ShimmerTable(rowCount: 8);
         }
 
         if (state is EmployeesError) {
