@@ -5,7 +5,8 @@ import 'package:donation_management_system/features/donations/presentation/view/
 import 'package:donation_management_system/features/donations/presentation/view/widgets/donations_main_content.dart';
 import 'package:donation_management_system/features/donations/presentation/view_model/donations_cubit/donation_stats_cubit.dart';
 import 'package:donation_management_system/features/donations/presentation/view_model/donations_cubit/donations_cubit.dart';
-import 'package:donation_management_system/features/categories/presentation/view_model/categories_cubit/categories_cubit.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/categories_bloc/categories_bloc.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/categories_bloc/categories_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,7 +26,7 @@ class DonationsView extends StatelessWidget {
           create: (context) => sl<DonationStatsCubit>()..getDonationKpis(),
         ),
         BlocProvider(
-          create: (context) => sl<CategoriesCubit>()..getCategories(),
+          create: (context) => sl<CategoriesBloc>()..add(GetCategoriesEvent()),
         ),
       ],
       child: Scaffold(

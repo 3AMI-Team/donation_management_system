@@ -72,8 +72,7 @@ import 'package:donation_management_system/features/categories/domain/use_case/g
 import 'package:donation_management_system/features/categories/domain/use_case/add_category_use_case.dart';
 import 'package:donation_management_system/features/categories/domain/use_case/update_category_use_case.dart';
 import 'package:donation_management_system/features/categories/domain/use_case/delete_category_use_case.dart';
-import 'package:donation_management_system/features/categories/presentation/view_model/categories_cubit/categories_cubit.dart';
-import 'package:donation_management_system/features/categories/presentation/view_model/add_category_cubit/add_category_cubit.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/categories_bloc/categories_bloc.dart';
 // Employees
 import 'package:donation_management_system/features/employees/data/data_source/employees_remote_data_source.dart';
 import 'package:donation_management_system/features/employees/data/repo/employees_repo_impl.dart';
@@ -256,16 +255,14 @@ void _initDonations() {
 }
 
 void _initCategories() {
-  // Cubit
-  sl.registerFactory(() => CategoriesCubit(
+  // Bloc
+  sl.registerFactory(() => CategoriesBloc(
         getCategoriesUseCase: sl(),
         getCasesUseCase: sl(),
         getDonationsUseCase: sl(),
-        deleteCategoryUseCase: sl(),
-      ));
-  sl.registerFactory(() => AddCategoryCubit(
         addCategoryUseCase: sl(),
         updateCategoryUseCase: sl(),
+        deleteCategoryUseCase: sl(),
       ));
 
   // Use Case

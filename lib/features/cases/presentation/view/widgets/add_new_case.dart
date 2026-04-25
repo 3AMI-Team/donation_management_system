@@ -2,7 +2,8 @@ import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/cases/domain/entity/add_case_params.dart';
 import 'package:donation_management_system/features/cases/presentation/view_model/add_case_cubit/add_case_cubit.dart';
 import 'package:donation_management_system/features/cases/presentation/view_model/add_case_cubit/add_case_state.dart';
-import 'package:donation_management_system/features/categories/presentation/view_model/categories_cubit/categories_cubit.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/categories_bloc/categories_bloc.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/categories_bloc/categories_state.dart';
 import 'package:donation_management_system/features/cases/presentation/view_model/cases_cubit/cases_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,7 +17,7 @@ class AddNewCase extends StatelessWidget {
       onTap: () {
         final addCaseCubit = context.read<AddCaseCubit>();
         final casesCubit = context.read<CasesCubit>();
-        final categoriesCubit = context.read<CategoriesCubit>();
+        final categoriesBloc = context.read<CategoriesBloc>();
 
         showDialog(
           context: context,
@@ -25,7 +26,7 @@ class AddNewCase extends StatelessWidget {
               providers: [
                 BlocProvider.value(value: addCaseCubit),
                 BlocProvider.value(value: casesCubit),
-                BlocProvider.value(value: categoriesCubit),
+                BlocProvider.value(value: categoriesBloc),
               ],
               child: const AddCaseDialog(),
             );
@@ -272,7 +273,7 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
         Gap(8.h),
-        BlocBuilder<CategoriesCubit, CategoriesState>(
+        BlocBuilder<CategoriesBloc, CategoriesState>(
           builder: (context, state) {
             if (state is CategoriesLoading) {
               return const LinearProgressIndicator();
@@ -291,8 +292,8 @@ class _AddCaseDialogState extends State<AddCaseDialog> {
                     isExpanded: true,
                     items: state.masterCategories.map((cat) {
                       return DropdownMenuItem<int>(
-                        value: cat.category.id,
-                        child: Text(cat.category.type),
+                        value: cat.id,
+                        child: Text(cat.type),
                       );
                     }).toList(),
                     onChanged: (val) => setState(() => selectedCategoryId = val!),

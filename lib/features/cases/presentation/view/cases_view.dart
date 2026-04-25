@@ -6,7 +6,8 @@ import 'package:donation_management_system/features/cases/presentation/view/widg
 import 'package:donation_management_system/features/cases/presentation/view_model/cases_cubit/case_stats_cubit.dart';
 import 'package:donation_management_system/features/cases/presentation/view_model/cases_cubit/cases_cubit.dart';
 import 'package:donation_management_system/features/cases/presentation/view_model/add_case_cubit/add_case_cubit.dart';
-import 'package:donation_management_system/features/categories/presentation/view_model/categories_cubit/categories_cubit.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/categories_bloc/categories_bloc.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/categories_bloc/categories_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CasesView extends StatelessWidget {
@@ -23,7 +24,7 @@ class CasesView extends StatelessWidget {
           create: (context) => sl<CaseStatsCubit>()..getCaseKpis(),
         ),
         BlocProvider(
-          create: (context) => sl<CategoriesCubit>()..getCategories(),
+          create: (context) => sl<CategoriesBloc>()..add(GetCategoriesEvent()),
         ),
         BlocProvider(
           create: (context) => sl<AddCaseCubit>(),

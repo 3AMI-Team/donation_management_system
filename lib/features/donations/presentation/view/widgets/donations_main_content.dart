@@ -1,4 +1,5 @@
-import 'package:donation_management_system/features/categories/presentation/view_model/categories_cubit/categories_cubit.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/categories_bloc/categories_bloc.dart';
+import 'package:donation_management_system/features/categories/presentation/view_model/categories_bloc/categories_state.dart';
 import 'package:donation_management_system/features/donations/presentation/view_model/donations_cubit/donations_cubit.dart';
 import 'package:donation_management_system/features/donations/presentation/view_model/donations_cubit/donations_state.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +55,6 @@ class _DonationsMainContentState extends State<DonationsMainContent> {
         if (state is DonationsLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is DonationsLoaded) {
-          // Sync text controller if needed (rarely needed for one-way search)
           return Column(
             children: [
               _buildFilters(context, state),
@@ -73,11 +73,11 @@ class _DonationsMainContentState extends State<DonationsMainContent> {
   }
 
   Widget _buildFilters(BuildContext context, DonationsLoaded state) {
-    return BlocBuilder<CategoriesCubit, CategoriesState>(
+    return BlocBuilder<CategoriesBloc, CategoriesState>(
       builder: (context, categoriesState) {
         List<String> categories = ['All'];
         if (categoriesState is CategoriesLoaded) {
-          categories.addAll(categoriesState.masterCategories.map((e) => e.category.type));
+          categories.addAll(categoriesState.masterCategories.map((e) => e.type));
         }
 
         return common.FilterChips(
