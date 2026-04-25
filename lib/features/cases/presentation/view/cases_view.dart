@@ -22,39 +22,41 @@ class CasesView extends StatelessWidget {
         BlocProvider(create: (context) => sl<CategoriesBloc>()..add(GetCategoriesEvent())),
         BlocProvider(create: (context) => sl<AddCaseCubit>()),
       ],
-      child: Scaffold(
-        body: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
-          children: [
-            FadeInDown(
-              duration: const Duration(milliseconds: 500),
-              child: PageHeader(
-                title: 'Cases Management',
-                subtitle: 'Manage your cases database, track contributions, and maintain relationships.',
-                filledButtonText: 'Add Case',
-                onFilledPressed: () {
-                  final addCaseCubit = context.read<AddCaseCubit>();
-                  final casesCubit = context.read<CasesCubit>();
-                  final categoriesBloc = context.read<CategoriesBloc>();
-                  showDialog(
-                    context: context,
-                    builder: (dialogContext) => MultiBlocProvider(
-                      providers: [
-                        BlocProvider.value(value: addCaseCubit),
-                        BlocProvider.value(value: casesCubit),
-                        BlocProvider.value(value: categoriesBloc),
-                      ],
-                      child: const AddCaseDialog(),
-                    ),
-                  );
-                },
+      child: Builder(
+        builder: (context) => Scaffold(
+          body: ListView(
+            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
+            children: [
+              FadeInDown(
+                duration: const Duration(milliseconds: 500),
+                child: PageHeader(
+                  title: 'Cases Management',
+                  subtitle: 'Manage your cases database, track contributions, and maintain relationships.',
+                  filledButtonText: 'Add Case',
+                  onFilledPressed: () {
+                    final addCaseCubit = context.read<AddCaseCubit>();
+                    final casesCubit = context.read<CasesCubit>();
+                    final categoriesBloc = context.read<CategoriesBloc>();
+                    showDialog(
+                      context: context,
+                      builder: (dialogContext) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: addCaseCubit),
+                          BlocProvider.value(value: casesCubit),
+                          BlocProvider.value(value: categoriesBloc),
+                        ],
+                        child: const AddCaseDialog(),
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-            Gap(20.h),
-            const CasesKPIsCards(),
-            Gap(20.h),
-            const CasesViewBody(),
-          ],
+              Gap(20.h),
+              const CasesKPIsCards(),
+              Gap(20.h),
+              const CasesViewBody(),
+            ],
+          ),
         ),
       ),
     );
