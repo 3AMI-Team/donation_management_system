@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:donation_management_system/core/widgets/custom_table.dart';
 import 'package:donation_management_system/core/widgets/table_header.dart';
 import 'package:donation_management_system/features/donors/domain/entity/donor_entity.dart';
@@ -23,7 +24,14 @@ class DonorsTable extends StatelessWidget {
     return CustomTable(
       headerCells: headerCells,
       dataRow: donors,
-      itemBuilder: (item) => DonorDataRow(donorEntity: item),
+      itemBuilder: (item) {
+        final index = donors.indexOf(item);
+        return FadeInUp(
+          delay: Duration(milliseconds: index * 50),
+          duration: const Duration(milliseconds: 500),
+          child: DonorDataRow(donorEntity: item),
+        );
+      },
     );
   }
 }

@@ -1,14 +1,13 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:donation_management_system/core/di/injection_container.dart';
-import 'package:donation_management_system/core/theme/typography.dart';
-import 'package:donation_management_system/features/donors/presentation/view/widgets/add_new_donor.dart';
+import 'package:donation_management_system/core/widgets/widgets.dart';
+import 'package:donation_management_system/features/donors/presentation/view/widgets/add_donor_dialog.dart';
 import 'package:donation_management_system/features/donors/presentation/view/widgets/donors_view_body.dart';
 import 'package:donation_management_system/features/donors/presentation/view/widgets/donors_kpi_cards.dart';
 import 'package:donation_management_system/features/donors/presentation/view_model/donors_cubit/donor_stats_cubit.dart';
 import 'package:donation_management_system/features/donors/presentation/view_model/donors_cubit/donors_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gap/gap.dart';
 
 class DonorsView extends StatelessWidget {
   const DonorsView({super.key});
@@ -17,36 +16,40 @@ class DonorsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => sl<DonorsCubit>()..getDonors(),
-        ),
-        BlocProvider(
-          create: (context) => sl<DonorStatsCubit>()..getDonorKpis(),
-        ),
+        BlocProvider(create: (context) => sl<DonorsCubit>()..getDonors()),
+        BlocProvider(create: (context) => sl<DonorStatsCubit>()..getDonorKpis()),
       ],
       child: Scaffold(
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-          child: ListView(
-            children: [
-              Text('Donors Management', style: AppTypography.h1),
-              Gap(5.h),
-              Row(
-                children: [
-                  Text(
-                    'Manage your donor database, track contributions, and maintain relationships with\nindividuals and corporate partners.',
-                    style: AppTypography.bodyMedium,
-                  ),
-                  const Spacer(),
-                  const AddNewDonor(),
-                ],
+        body: ListView(
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
+          children: [
+            FadeInDown(
+              duration: const Duration(milliseconds: 500),
+              child: PageHeader(
+                title: 'Donors Management',
+                subtitle: 'Manage your donor database, track contributions, and maintain relationships.',
+                filledButtonText: 'Add Donor',
+                onFilledPressed: () {
+                  final donorsCubit = context.read<DonorsCubit>();
+                  final statsCubit = context.read<DonorStatsCubit>();
+                  showDialog(
+                    context: context,
+                    builder: (dialogContext) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(value: donorsCubit),
+                        BlocProvider.value(value: statsCubit),
+                      ],
+                      child: const AddDonorDialog(),
+                    ),
+                  );
+                },
               ),
-              Gap(20.h),
-              const DonorsKPIsCards(),
-              Gap(20.h),
-              const DonorsViewBody(),
-            ],
-          ),
+            ),
+            Gap(20.h),
+            const DonorsKPIsCards(),
+            Gap(20.h),
+            const DonorsViewBody(),
+          ],
         ),
       ),
     );
