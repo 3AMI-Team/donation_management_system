@@ -20,7 +20,6 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
   final UpdateCategoryUseCase updateCategoryUseCase;
   final DeleteCategoryUseCase deleteCategoryUseCase;
 
-  // TODO: Move stats to a dedicated backend endpoint to remove cross-feature coupling.
   final GetCasesUseCase getCasesUseCase;
   final GetDonationsUseCase getDonationsUseCase;
 

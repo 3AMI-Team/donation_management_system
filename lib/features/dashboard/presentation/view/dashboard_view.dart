@@ -54,12 +54,12 @@ class _DashboardBody extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             Expanded(
+            Expanded(
               child: Column(
                 children: [
-                  TrendsSection(),
+                  const TrendsSection(),
                   Gap(32.h),
-                  RecentActivitySection(),
+                  const RecentActivitySection(),
                 ],
               ),
             ),

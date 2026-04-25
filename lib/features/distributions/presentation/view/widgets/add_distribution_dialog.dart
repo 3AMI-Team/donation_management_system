@@ -67,15 +67,6 @@ class _AddDistributionDialogState extends State<AddDistributionDialog> {
                 return SizedBox(height: 200, child: Center(child: Text(state.message)));
               }
 
-              final loadedState = context.read<AddDistributionCubit>().state;
-              if (loadedState is! DependenciesLoaded && loadedState is! AddDistributionLoading && loadedState is! AddDistributionError) {
-                return const SizedBox.shrink();
-              }
-
-              // Accessing data from cubit instead of state to handle transitions
-              final cubit = context.read<AddDistributionCubit>();
-              // Note: This requires the cubit to expose the lists. 
-              // For now, I'll rely on the logic in DependenciesLoaded if possible.
               List<CaseEntity> cases = [];
               List<Donation> donations = [];
               List<EmployeeEntity> employees = [];

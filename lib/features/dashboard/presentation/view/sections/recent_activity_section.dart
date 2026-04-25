@@ -1,11 +1,10 @@
+import 'package:animate_do/animate_do.dart';
+import 'package:donation_management_system/core/widgets/widgets.dart';
 import 'package:donation_management_system/features/dashboard/presentation/view/widgets/dashboard_error_widget.dart';
 import 'package:donation_management_system/features/dashboard/presentation/view/widgets/recent_activity_table.dart';
 import 'package:donation_management_system/features/dashboard/presentation/view_model/recent_activity_cubit/recent_activity_cubit.dart';
 import 'package:donation_management_system/features/dashboard/presentation/view_model/recent_activity_cubit/recent_activity_state.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:shimmer/shimmer.dart';
 
 class RecentActivitySection extends StatelessWidget {
   const RecentActivitySection({super.key});
@@ -15,9 +14,12 @@ class RecentActivitySection extends StatelessWidget {
     return BlocBuilder<RecentActivityCubit, RecentActivityState>(
       builder: (context, state) {
         if (state is RecentActivityLoaded) {
-          return RecentActivityTable(donations: state.donations);
+          return FadeInUp(
+            duration: const Duration(milliseconds: 600),
+            child: RecentActivityTable(donations: state.donations),
+          );
         } else if (state is RecentActivityLoading) {
-          return _buildShimmer();
+          return const ShimmerTable(rowCount: 5);
         } else if (state is RecentActivityError) {
           return DashboardErrorWidget(
             message: state.message,
@@ -26,21 +28,6 @@ class RecentActivitySection extends StatelessWidget {
         }
         return const SizedBox.shrink();
       },
-    );
-  }
-
-  Widget _buildShimmer() {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: Container(
-        width: double.infinity,
-        height: 300.h,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
-        ),
-      ),
     );
   }
 }

@@ -1,9 +1,8 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:donation_management_system/core/utils/extensions.dart';
-import 'package:donation_management_system/core/widgets/kpi_card.dart';
+import 'package:donation_management_system/core/widgets/widgets.dart';
+import 'package:donation_management_system/features/dashboard/domain/entity/dashboard_kpis_entity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gap/gap.dart';
-import '../../../domain/entity/dashboard_kpis_entity.dart';
 
 class KPIsCards extends StatelessWidget {
   final DashboardKpis kpis;
@@ -11,48 +10,32 @@ class KPIsCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final items = [
+      (title: 'Total Donations', value: kpis.totalDonations.amount.toCompactCurrency(), icon: Icons.attach_money_outlined, change: kpis.totalDonations.vsLastMonth),
+      (title: 'Active Cases', value: kpis.activeCases.amount.toString(), icon: Icons.people_alt_outlined, change: kpis.activeCases.vsLastMonth),
+      (title: 'Total Donors', value: kpis.totalDonors.amount.toString(), icon: Icons.people_outline_outlined, change: kpis.totalDonors.vsLastMonth),
+      (title: 'Funds Distributed', value: kpis.fundsDistributed.amount.toCompactCurrency(), icon: Icons.attach_money_outlined, change: kpis.fundsDistributed.vsLastMonth),
+    ];
+
     return Row(
-      children: [
-        Expanded(
-          child: KPICard(
-            title: 'Total Donations',
-            value: kpis.totalDonations.amount.toCompactCurrency(),
-            vsLastMonth: kpis.totalDonations.vsLastMonth,
-            logo: 'assets/icons/mony.png',
-            icon: Icons.attach_money_outlined,
+      children: List.generate(items.length, (index) {
+        final item = items[index];
+        return Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(right: index < items.length - 1 ? 16.w : 0),
+            child: FadeInUp(
+              delay: Duration(milliseconds: index * 100),
+              duration: const Duration(milliseconds: 500),
+              child: StatCard(
+                title: item.title,
+                value: item.value,
+                icon: item.icon,
+                percentageChange: item.change,
+              ),
+            ),
           ),
-        ),
-        Gap(16.w),
-        Expanded(
-          child: KPICard(
-            title: 'Active Cases',
-            value: kpis.activeCases.amount.toString(),
-            vsLastMonth: kpis.activeCases.vsLastMonth,
-            logo: 'assets/icons/active cases.png',
-            icon: Icons.people_alt_outlined,
-          ),
-        ),
-        Gap(16.w),
-        Expanded(
-          child: KPICard(
-            title: 'Total Donors',
-            value: kpis.totalDonors.amount.toString(),
-            vsLastMonth: kpis.totalDonors.vsLastMonth,
-            logo: 'assets/icons/Donors.png',
-            icon: Icons.people_outline_outlined,
-          ),
-        ),
-        Gap(16.w),
-        Expanded(
-          child: KPICard(
-            title: 'Funds Distributed',
-            value: kpis.fundsDistributed.amount.toCompactCurrency(),
-            vsLastMonth: kpis.fundsDistributed.vsLastMonth,
-            logo: 'assets/icons/funds distributed.png',
-            icon: Icons.attach_money_outlined,
-          ),
-        ),
-      ],
+        );
+      }),
     );
   }
 }
